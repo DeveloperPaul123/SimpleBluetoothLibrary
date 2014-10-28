@@ -17,11 +17,28 @@ import java.util.List;
  */
 public class BluetoothDeviceListAdapter extends ArrayAdapter<BluetoothDevice> {
 
+    /**
+     * List that will hold all the devices.
+     */
     private List<BluetoothDevice> devices;
+
+    /**
+     * Context from the UI activity.
+     */
     private Context mContext;
+
+    /**
+     * Resource Id of a list item layout.
+     */
     private int resourceId;
 
-
+    /**
+     * Constructor for {@code BluetoothDeviceListAdapter}. Creates a new array adapter for the device dialog for when scanning
+     * for a new device.
+     * @param context the context of the UI activity.
+     * @param resource resource id for the list item layout.
+     * @param objects list of BluetoothDevices to display in the list.
+     */
     public BluetoothDeviceListAdapter(Context context, int resource, List<BluetoothDevice> objects) {
         super(context, resource, objects);
         this.devices = objects;
@@ -39,6 +56,11 @@ public class BluetoothDeviceListAdapter extends ArrayAdapter<BluetoothDevice> {
         return position;
     }
 
+    /**
+     * Returns a {@code BluetoothDevice} given a postion in the list.
+     * @param position the position of the device in the list. This is 0 based.
+     * @return a {@code BluetoothDevice}
+     */
     public BluetoothDevice getItem(int position) {
         return devices.get(position);
     }

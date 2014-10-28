@@ -340,15 +340,19 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
          */
         if(connectThread != null) {
             connectThread.cancel();
+            connectThread = null;
         }
         if(connectedThread != null) {
             connectedThread.cancel();
+            connectedThread = null;
         }
         if(acceptThread != null) {
             acceptThread.cancel();
+            acceptThread = null;
         }
         if(connectToServerThread != null) {
             connectToServerThread.cancel();
+            connectToServerThread = null;
         }
         /*
         Close the proxy(s) that are being used.
@@ -365,21 +369,10 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
     public void sendData(String data) {
         //check to see if the socket is connected first.
         if(bluetoothSocket != null) {
-            if(!bluetoothSocket.isConnected()){
-                if(bluetoothDevice != null) {
-                    //Device not connected so connect again
-                    Toast.makeText(mContext, "Connecting...", Toast.LENGTH_SHORT).show();
-                    connectDevice(bluetoothDevice.getAddress());
-                }
-                else {
-                    Toast.makeText(mContext, "Not connected!", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                //is connected...
+            if(bluetoothSocket.isConnected()){
                 if(connectedThread != null) {
                     connectedThread.write(data);
                 }
-
             }
         }
     }
@@ -396,9 +389,15 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
      * @param number the integer to send.
      */
     public void sendData(int number) {
-      if(connectedThread != null) {
-          connectedThread.write(number);
-      }
+        //check to see if the socket is connected first.
+        if(bluetoothSocket != null) {
+            if(bluetoothSocket.isConnected()){
+                //is connected...
+                if(connectedThread != null) {
+                    connectedThread.write(number);
+                }
+            }
+        }
     }
 
     /**
@@ -413,12 +412,15 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                 //cancel all running threads.
                 if(connectedThread != null) {
                     connectedThread.cancel();
+                    connectedThread = null;
                 }
                 if(connectThread != null) {
                     connectThread.cancel();
+                    connectThread = null;
                 }
                 if(connectToServerThread != null) {
                     connectToServerThread.cancel();
+                    connectToServerThread = null;
                 }
                 //check the mac address first.
                 if(bluetoothAdapter.checkBluetoothAddress(macAddress)) {
@@ -442,12 +444,15 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
         bluetoothAdapter.cancelDiscovery();
         if(connectToServerThread != null) {
             connectToServerThread.cancel();
+            connectToServerThread = null;
         }
         if(connectedThread != null) {
             connectedThread.cancel();
+            connectedThread = null;
         }
         if(connectThread != null) {
             connectThread.cancel();
+            connectThread = null;
         }
 
         acceptThread = new AcceptThread();
@@ -525,6 +530,7 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
         public ConnectDeviceThread(BluetoothDevice device) {
             // Use a temporary object that is later assigned to mmSocket,
             // because mmSocket is final
+            bluetoothDevice = device;
             BluetoothSocket tmp = null;
             mmDevice = device;
 
@@ -681,6 +687,7 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
         public ConnectDeviceToServerThread(BluetoothDevice device) {
             // Use a temporary object that is later assigned to mmSocket,
             // because mmSocket is final
+            bluetoothDevice = device;
             BluetoothSocket tmp = null;
             mmDevice = device;
 

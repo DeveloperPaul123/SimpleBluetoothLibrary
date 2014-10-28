@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,8 +26,10 @@ public class MainActivity extends Activity {
     private SimpleBluetooth simpleBluetooth;
     private static final int SCAN_REQUEST = 119;
     private static final int CHOOSE_SERVER_REQUEST = 120;
-    private Button createServer, connectToServer;
+    private Button createServer, connectToServer, sendData;
     private TextView connectionState;
+    boolean isConnected;
+    private EditText dataToSend;
     private String curMacAddress;
 
     @Override
@@ -34,17 +37,57 @@ public class MainActivity extends Activity {
         super.onResume();
         simpleBluetooth = new SimpleBluetooth(this, this);
         simpleBluetooth.initializeSimpleBluetooth();
+        simpleBluetooth.setSimpleBluetoothListener(new SimpleBluetoothListener() {
+
+            @Override
+            public void onBluetoothDataReceived(byte[] bytes, String data) {
+                //read the data coming in.
+                Toast.makeText(MainActivity.this, "Data: " + data, Toast.LENGTH_SHORT).show();
+                connectionState.setText("Data: " + data);
+                isConnected = false;
+                Log.w("SIMPLEBT", "Data received");
+            }
+
+            @Override
+            public void onDeviceConnected(BluetoothDevice device) {
+                //a device is connected so you can now send stuff to it
+                Toast.makeText(MainActivity.this, "Connected!", Toast.LENGTH_SHORT).show();
+                connectionState.setText("Connected");
+                isConnected = true;
+                Log.w("SIMPLEBT", "Device connected");
+            }
+
+            @Override
+            public void onDeviceDisconnected(BluetoothDevice device) {
+                // device was disconnected so connect it again?
+                Toast.makeText(MainActivity.this, "Disconnected!", Toast.LENGTH_SHORT).show();
+                connectionState.setText("Disconnected");
+                Log.w("SIMPLEBT", "Device disconnected");
+            }
+
+            @Override
+            public void onDiscoveryStarted() {
+                //scan for other devices.
+            }
+
+            @Override
+            public void onDiscoveryFinished() {
+                //scan was finished or done.
+            }
+        });
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        isConnected = false;
         connectionState = (TextView) findViewById(R.id.connection_state);
         connectionState.setText("Disconnected");
         createServer = (Button) findViewById(R.id.create_server_button);
         connectToServer = (Button) findViewById(R.id.connect_to_server);
+        dataToSend = (EditText) findViewById(R.id.data_to_send);
+        sendData = (Button) findViewById(R.id.send_data);
 
         createServer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +106,16 @@ public class MainActivity extends Activity {
                 }
             }
         });
+
+        sendData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isConnected) {
+                    simpleBluetooth.sendData(dataToSend.getText().toString());
+                }
+            }
+        });
+
     }
 
 
@@ -101,42 +154,7 @@ public class MainActivity extends Activity {
                 } else {
                     simpleBluetooth.connectToBluetoothServer(curMacAddress);
                 }
-                simpleBluetooth.setSimpleBluetoothListener(new SimpleBluetoothListener() {
 
-                    @Override
-                    public void onBluetoothDataReceived(byte[] bytes, String data) {
-                        //read the data coming in.
-                        Toast.makeText(MainActivity.this, "Data: " + data, Toast.LENGTH_SHORT).show();
-                        connectionState.setText("Data: " + data);
-                        Log.w("SIMPLEBT", "Data received");
-                    }
-
-                    @Override
-                    public void onDeviceConnected(BluetoothDevice device) {
-                        //a device is connected so you can now send stuff to it
-                        Toast.makeText(MainActivity.this, "Connected!", Toast.LENGTH_SHORT).show();
-                        connectionState.setText("Connected");
-                        Log.w("SIMPLEBT", "Device connected");
-                    }
-
-                    @Override
-                    public void onDeviceDisconnected(BluetoothDevice device) {
-                        // device was disconnected so connect it again?
-                        Toast.makeText(MainActivity.this, "Disconnected!", Toast.LENGTH_SHORT).show();
-                        connectionState.setText("Disconnected");
-                        Log.w("SIMPLEBT", "Device disconnected");
-                    }
-
-                    @Override
-                    public void onDiscoveryStarted() {
-                        //scan for other devices.
-                    }
-
-                    @Override
-                    public void onDiscoveryFinished() {
-                        //scan was finished or done.
-                    }
-                });
             }
         }
     }

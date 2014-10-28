@@ -12,8 +12,10 @@
         <activity
             android:name=".dialogs.DeviceDialog"
             android:label="@string/title_activity_bluetooth_dialog"
-            android:theme="@android:style/Theme.Holo.Dialog">
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar">
         </activity>
+
     </application>
+
 
 </manifest>

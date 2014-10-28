@@ -23,6 +23,9 @@ import com.devpaul.bluetoothutillib.utils.BluetoothUtility;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Dialog for choosing a paired bluetooth device or scanning for new, available devices.
+ */
 public class DeviceDialog extends BaseBluetoothActivity {
 
     /**

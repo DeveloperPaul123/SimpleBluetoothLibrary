@@ -91,6 +91,13 @@ public class SimpleBluetooth  implements BluetoothBroadcastReceiver.BroadcastCal
         this.isInitialized = false;
     }
 
+    /**
+     * Constructor for {@code SimpleBluetooth} Use this constructor to provide your own custom bluetooth
+     * handler.
+     * @param context the context of the calling activity.
+     * @param refActivity reference to the calling activity. Context and activity should match.
+     * @param handler custom {@code BluetoothHandler} for bluetooth event call backs.
+     */
     public SimpleBluetooth(Context context, Activity refActivity, BluetoothHandler handler) {
         //initialize fields.
         this.progressDialog = new ProgressDialog(context);
@@ -112,7 +119,7 @@ public class SimpleBluetooth  implements BluetoothBroadcastReceiver.BroadcastCal
     /**
      * Sets a simple bluetooth listener for this service. Use this in your activity to get back the
      * read data.
-     * @param simpleBluetoothListener
+     * @param simpleBluetoothListener the new simple bluetooth listener
      */
     public void setSimpleBluetoothListener(SimpleBluetoothListener simpleBluetoothListener) {
         this.mListener = simpleBluetoothListener;
@@ -171,6 +178,23 @@ public class SimpleBluetooth  implements BluetoothBroadcastReceiver.BroadcastCal
     }
 
     /**
+     * Sends data to the connected device.
+     * @param data The string of data to send.
+     */
+    public void sendData(String data) {
+        bluetoothUtility.sendData(data);
+    }
+
+    /**
+     * Sends data to the connected device.
+     * @param data the int to send.
+     */
+    public void sendData(int data) {
+        bluetoothUtility.sendData(data);
+    }
+
+
+    /**
      * Starts the device dialog to get a device to connect to.
      * @param requestCode the request code for the intent. Use this to check against in
      *                    OnActivityResult.
@@ -187,7 +211,7 @@ public class SimpleBluetooth  implements BluetoothBroadcastReceiver.BroadcastCal
     public void connectToBluetoothDevice(String macAddress) {
         if(!isInitialized) {
             throw new IllegalStateException("Must initialize before using any other method in class" +
-                    "SimpleBluetooth!");
+                    "SimpleBluetooth! Call initializeSimpleBluetooth()");
         } else {
             bluetoothUtility.connectDevice(macAddress);
         }
@@ -201,7 +225,7 @@ public class SimpleBluetooth  implements BluetoothBroadcastReceiver.BroadcastCal
     public void connectToBluetoothDevice(BluetoothDevice device) {
         if(!isInitialized) {
             throw new IllegalStateException("Must initialize before using any other method in class" +
-                    "SimpleBluetooth!");
+                    "SimpleBluetooth! Call initializeSimpleBluetooth()");
         }
 
     }
@@ -212,7 +236,7 @@ public class SimpleBluetooth  implements BluetoothBroadcastReceiver.BroadcastCal
     public void createBluetoothServerConnection() {
         if(!isInitialized) {
             throw new IllegalStateException("Must initialize before using any other method in class" +
-                    "SimpleBluetooth!");
+                    "SimpleBluetooth! Call initializeSimpleBluetooth()");
         } else {
             bluetoothUtility.createBluetoothServerSocket();
         }
@@ -221,11 +245,12 @@ public class SimpleBluetooth  implements BluetoothBroadcastReceiver.BroadcastCal
 
     /**
      * Connects to a bluetooth server set up on another device.
+     * @param macAddress the mac address of the device. If this isn't valid, it won't connect.
      */
     public void connectToBluetoothServer(String macAddress) {
         if(!isInitialized) {
             throw new IllegalStateException("Must initialize before using any other method in class" +
-                    "SimpleBluetooth!");
+                    "SimpleBluetooth! Call initializeSimpleBluetooth()");
         } else {
             bluetoothUtility.connectToClientToBluetoothServer(macAddress);
         }
@@ -239,12 +264,20 @@ public class SimpleBluetooth  implements BluetoothBroadcastReceiver.BroadcastCal
     public void connectToA2DPDevice(String deviceName) {
         if(!isInitialized) {
             throw new IllegalStateException("Must initialize before using any other method in class" +
-                    "SimpleBluetooth!");
+                    "SimpleBluetooth! Call initializeSimpleBluetooth()");
         } else {
             a2dpDevice = bluetoothUtility.findDeviceByName(deviceName);
             bluetoothUtility.setUpA2DPConnection();
         }
 
+    }
+
+    /**
+     * Makes the device discoverable to other devices for a certain amount of time.
+     * @param duration the duration length in seconds.
+     */
+    public void makeDiscoverable(int duration) {
+        bluetoothUtility.enableDiscovery(duration);
     }
 
     /*
@@ -300,6 +333,4 @@ public class SimpleBluetooth  implements BluetoothBroadcastReceiver.BroadcastCal
         BluetoothStateReceiver.safeUnregister(mContext, bluetoothStateReceiver);
         bluetoothUtility.closeConnections();
     }
-
-
 }

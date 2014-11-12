@@ -141,7 +141,7 @@ public class SimpleBluetooth {
         //state boolean
         this.isInitialized = false;
     }
-    
+
     /**
      * Constructor for {@code SimpleBluetooth} Use this constructor to provide your own custom bluetooth
      * handler.

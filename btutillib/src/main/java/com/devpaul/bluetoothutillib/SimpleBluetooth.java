@@ -20,7 +20,56 @@ import com.devpaul.bluetoothutillib.utils.SimpleBluetoothListener;
  * Created by Paul Tsouchlos
  * Class for easily setting up bluetooth connections.
  */
-public class SimpleBluetooth  implements BluetoothBroadcastReceiver.BroadcastCallback, BluetoothStateReceiver.Callback{
+public class SimpleBluetooth {
+
+    /**
+     * Receiver for the {@code BluetoothBroadcastReceiver}
+     */
+    private final BluetoothBroadcastReceiver.BroadcastCallback bluetoothBroadcastRecieverCallback
+            = new BluetoothBroadcastReceiver.BroadcastCallback() {
+        @Override
+        public void onBluetoothEnabled() {
+            initializeSimpleBluetooth();
+        }
+
+        @Override
+        public void onBluetoothDisabled() {
+            initializeSimpleBluetooth();
+        }
+    };
+
+    /**
+     * Receiver for the {@code BluetoothStateReceiver}
+     */
+    private final BluetoothStateReceiver.Callback stateRecieverCallback = new BluetoothStateReceiver.Callback() {
+        @Override
+        public void onDeviceConnected(BluetoothDevice device) {
+            if(mListener != null) {
+                mListener.onDeviceConnected(device);
+            }
+        }
+
+        @Override
+        public void onDeviceDisconnected(BluetoothDevice device) {
+            if(mListener != null) {
+                mListener.onDeviceDisconnected(device);
+            }
+        }
+
+        @Override
+        public void onDiscoveryFinished() {
+            if(mListener != null) {
+                mListener.onDiscoveryFinished();
+            }
+        }
+
+        @Override
+        public void onDiscoveryStarted() {
+            if(mListener != null) {
+                mListener.onDiscoveryStarted();
+            }
+        }
+    };
 
     /**
      * {@link com.devpaul.bluetoothutillib.utils.SimpleBluetoothListener} for SimpleBluetooth
@@ -85,8 +134,10 @@ public class SimpleBluetooth  implements BluetoothBroadcastReceiver.BroadcastCal
         this.mActivity = refActivity;
         this.bluetoothUtility = new BluetoothUtility(mContext, mActivity, mHandler);
         //register the state change receiver.
-        this.bluetoothBroadcastReceiver = BluetoothBroadcastReceiver.register(mContext, this);
-        this.bluetoothStateReceiver = BluetoothStateReceiver.register(mContext, this);
+        this.bluetoothBroadcastReceiver = BluetoothBroadcastReceiver
+                .register(mContext, bluetoothBroadcastRecieverCallback);
+        this.bluetoothStateReceiver = BluetoothStateReceiver
+                .register(mContext, stateRecieverCallback);
         //state boolean
         this.isInitialized = false;
     }
@@ -110,8 +161,10 @@ public class SimpleBluetooth  implements BluetoothBroadcastReceiver.BroadcastCal
                 new NullPointerException("Custom BluetoothHandler cannot be null!");
         this.bluetoothUtility = new BluetoothUtility(mContext, mActivity, customHandler);
         //register the state change receiver.
-        this.bluetoothBroadcastReceiver = BluetoothBroadcastReceiver.register(mContext, this);
-        this.bluetoothStateReceiver = BluetoothStateReceiver.register(mContext, this);
+        this.bluetoothBroadcastReceiver = BluetoothBroadcastReceiver
+                .register(mContext, bluetoothBroadcastRecieverCallback);
+        this.bluetoothStateReceiver = BluetoothStateReceiver
+                .register(mContext, stateRecieverCallback);
         //state boolean
         this.isInitialized = false;
     }
@@ -280,50 +333,6 @@ public class SimpleBluetooth  implements BluetoothBroadcastReceiver.BroadcastCal
         bluetoothUtility.enableDiscovery(duration);
     }
 
-    /*
-        Callback methods
-     */
-
-    @Override
-    public void onBluetoothEnabled() {
-        initializeSimpleBluetooth();
-    }
-
-    @Override
-    public void onBluetoothDisabled() {
-        initializeSimpleBluetooth();
-    }
-
-    @Override
-    public void onDeviceConnected(BluetoothDevice device) {
-        if(mListener != null) {
-            mListener.onDeviceConnected(device);
-        }
-    }
-
-    @Override
-    public void onDeviceDisconnected(BluetoothDevice device) {
-        if(mListener != null) {
-            mListener.onDeviceDisconnected(device);
-        }
-    }
-
-    @Override
-    public void onDiscoveryFinished() {
-        if(mListener != null) {
-            mListener.onDiscoveryFinished();
-        }
-    }
-
-    @Override
-    public void onDiscoveryStarted() {
-        if(mListener != null) {
-            mListener.onDiscoveryStarted();
-        }
-    }
-    /*
-    End call back methods
-     */
 
     /**
      * Ends all connections and unregister the receiver.

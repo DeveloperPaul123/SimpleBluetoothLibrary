@@ -8,7 +8,7 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        applicationId "com.devpaul.bluetoothutillib"
+
         minSdkVersion 14
         targetSdkVersion 19
         versionName project.VERSION_NAME
@@ -16,7 +16,7 @@ android {
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -24,6 +24,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:support-v4:21.0.3'
 }
 
 apply from: '../maven_push.gradle'

@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Message;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -15,7 +14,6 @@ import com.devpaul.bluetoothutillib.R;
 import com.devpaul.bluetoothutillib.broadcasts.BluetoothBroadcastReceiver;
 import com.devpaul.bluetoothutillib.broadcasts.BluetoothStateReceiver;
 import com.devpaul.bluetoothutillib.broadcasts.FoundDeviceReceiver;
-import com.devpaul.bluetoothutillib.handlers.BluetoothHandler;
 import com.devpaul.bluetoothutillib.utils.BaseBluetoothActivity;
 import com.devpaul.bluetoothutillib.utils.BluetoothDeviceListAdapter;
 import com.devpaul.bluetoothutillib.utils.BluetoothUtility;
@@ -88,34 +86,27 @@ public class DeviceDialog extends BaseBluetoothActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth_dialog);
+
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
         //prepare the progress dialog.
         prepareProgressDialog();
         //list view for all the items.
         listView = (ListView) findViewById(android.R.id.list);
         //start the bluetooth utility.
-        bluetoothUtility = new BluetoothUtility(this, this, new BluetoothHandler() {
-            @Override
-            public void handleMessage(Message message) {
-
-            }
-        });
-
-        if(bluetoothUtility.checkIfEnabled()) {
-            //bluetooth is enabled.
-            populateList();
-        } else {
-            //enable bluetooth.
-            bluetoothUtility.enableBluetooth();
-        }
         //set up the button.
         scanButton = (Button) findViewById(R.id.scan_button);
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bluetoothUtility.startScan();
+                requestScan();
             }
         });
 
+        populateList();
     }
 
     /**
@@ -129,7 +120,7 @@ public class DeviceDialog extends BaseBluetoothActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if(bluetoothUtility != null) {
-                    bluetoothUtility.cancelScan();
+                    cancelScan();
                     progressDialog.dismiss();
                 }
             }
@@ -141,19 +132,14 @@ public class DeviceDialog extends BaseBluetoothActivity {
     protected void onResume() {
         super.onResume();
         //register the broadcast receivers for this activity.
-        bluetoothBroadcastReceiver = BluetoothBroadcastReceiver.register(this, this);
         foundDeviceReceiver = FoundDeviceReceiver.register(this, this);
-        bluetoothStateReceiver = BluetoothStateReceiver.register(this, this);
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         //unregister the receivers.
-        BluetoothBroadcastReceiver.safeUnregister(this, bluetoothBroadcastReceiver);
         FoundDeviceReceiver.safeUnregister(this, foundDeviceReceiver);
-        BluetoothStateReceiver.safeUnregister(this, bluetoothStateReceiver);
     }
 
     /**
@@ -161,7 +147,7 @@ public class DeviceDialog extends BaseBluetoothActivity {
      */
     private void populateList() {
         devices = new ArrayList<BluetoothDevice>();
-        devices = bluetoothUtility.getPairedDevices();
+        devices = getSimpleBluetooth().getBluetoothUtility().getPairedDevices();
         bdla = new BluetoothDeviceListAdapter(this,
                 R.layout.devpaul_bluetooth_list_item_layout, devices);
         listView.setAdapter(bdla);
@@ -184,15 +170,14 @@ public class DeviceDialog extends BaseBluetoothActivity {
     }
 
     @Override
-    public void onBluetoothDisabled() {
-        setResult(RESULT_CANCELED);
-        finish();
-    }
-
-    @Override
     public void onDeviceFound(BluetoothDevice device) {
         bdla.add(device);
         bdla.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onBluetoothDataReceived(byte[] bytes, String data) {
+
     }
 
     @Override

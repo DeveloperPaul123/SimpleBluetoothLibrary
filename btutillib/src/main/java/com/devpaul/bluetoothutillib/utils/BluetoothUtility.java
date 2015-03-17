@@ -15,8 +15,10 @@ import android.widget.Toast;
 import com.devpaul.bluetoothutillib.errordialogs.InvalidMacAddressDialog;
 import com.devpaul.bluetoothutillib.handlers.BluetoothHandler;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -113,9 +115,24 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
     private BluetoothA2dp mBluetoothA2DP;
 
     /**
+     * Type of input streams that can be used for reading bluetooth data.
+     * NORMAL, the normal stream will be used. A buffer will be dynamically allocated and the bytes
+     * read to fill the buffer.
+     * BUFFERED, a Buffered Reader will be used to read the information line by line.
+     */
+    public static enum InputStreamType {NORMAL, BUFFERED};
+
+    private InputStreamType streamType = InputStreamType.NORMAL;
+
+    /**
      * Bluetooth Request constant.
      */
     public static final int REQUEST_BLUETOOTH = 1001;
+
+    /**
+     * Request code for a bluetooth scan.
+     */
+    public static final int REQUEST_BLUETOOTH_SCAN = 10342;
 
     /**
      * Constructor for {@code BluetoothUtility} This class is a wrapper class for a {@code
@@ -135,6 +152,12 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
         }
         this.mActivity = refActivity;
         this.bluetoothHandler = handler;
+    }
+
+    public void scan() {
+        if(bluetoothAdapter != null) {
+            bluetoothAdapter.startDiscovery();
+        }
     }
 
     /**
@@ -213,6 +236,10 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
         }
     }
 
+    public void setInputStreamType(InputStreamType type) {
+        this.streamType = type;
+    }
+
     /**
      * Connects a device given a mac address.
      * @param macAddress the mac address of the device.
@@ -236,7 +263,7 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                     connectToServerThread.cancel();
                 }
                 //check the mac address first.
-                if(bluetoothAdapter.checkBluetoothAddress(macAddress)) {
+                if(BluetoothAdapter.checkBluetoothAddress(macAddress)) {
                     bluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress);
                     connectThread = new ConnectDeviceThread(bluetoothDevice);
                     connectThread.start();
@@ -247,16 +274,6 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                 }
 
             }
-        }
-    }
-
-    /**
-     * Starts a scan for nearby discoverable devices.
-     */
-    public void startScan() {
-        boolean check = bluetoothAdapter.startDiscovery();
-        if(!check) {
-            //TODO
         }
     }
 
@@ -612,21 +629,54 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
         }
 
         public void run() {
-            byte[] buffer = new byte[1024];  // buffer store for the stream
+            byte[] buffer;  // buffer store for the stream
             int bytes; // bytes returned from read()
+            BufferedReader reader;
 
-            // Keep listening to the InputStream until an exception occurs
-            while (true) {
-                try {
-                    // Read from the InputStream
-                    bytes = mInputStream.read(buffer);
-                    // Send the obtained bytes to the UI activity
-                    bluetoothHandler.obtainMessage(BluetoothHandler.MESSAGE_READ, bytes, -1, buffer)
-                            .sendToTarget();
-                } catch (IOException e) {
-                    break;
+            if(streamType == InputStreamType.NORMAL) {
+                // Keep listening to the InputStream until an exception occurs
+                while (true) {
+                    try {
+                        bytes = mInputStream.available();
+                        if(bytes > 0) {
+                            buffer = new byte[bytes];
+                            // Read from the InputStream
+                            bytes = mInputStream.read(buffer);
+                            // Send the obtained bytes to the UI activity
+                            bluetoothHandler.obtainMessage(BluetoothHandler.MESSAGE_READ, bytes, -1, buffer)
+                                    .sendToTarget();
+                        }
+                    } catch (IOException e) {
+                        break;
+                    }
+                }
+            //Buffered reader.
+            } else {
+                reader = new BufferedReader(new InputStreamReader(mInputStream));
+                // Keep listening to the InputStream until an exception occurs
+                while (true) {
+                    try {
+                        if(reader.ready()) {
+                            String message = reader.readLine();
+                            bluetoothHandler.obtainMessage(BluetoothHandler.MESSAGE_READ, -1, -1, message)
+                                    .sendToTarget();
+                        }
+//                        bytes = mInputStream.available();
+//                        if(bytes > 0) {
+//                            buffer = new byte[bytes];
+//                            // Read from the InputStream
+//                            bytes = mInputStream.read(buffer);
+//                            // Send the obtained bytes to the UI activity
+//                            bluetoothHandler.obtainMessage(BluetoothHandler.MESSAGE_READ, bytes, -1, buffer)
+//                                    .sendToTarget();
+//                        }
+                    } catch (IOException e) {
+                        break;
+                    }
                 }
             }
+
+
         }
 
         /**

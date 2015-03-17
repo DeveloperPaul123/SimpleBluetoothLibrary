@@ -16,6 +16,8 @@ import com.devpaul.bluetoothutillib.handlers.BluetoothHandler;
 import com.devpaul.bluetoothutillib.utils.BluetoothUtility;
 import com.devpaul.bluetoothutillib.utils.SimpleBluetoothListener;
 
+import static com.devpaul.bluetoothutillib.utils.BluetoothUtility.InputStreamType;
+
 /**
  * Created by Paul Tsouchlos
  * Class for easily setting up bluetooth connections.
@@ -122,6 +124,16 @@ public class SimpleBluetooth {
     private BluetoothHandler customHandler;
 
     /**
+     * The input stream type to use for the bluetooth thread.
+     */
+    private InputStreamType curType;
+
+    /**
+     * Boolean for connecting with service.
+     */
+    private boolean connectWithService = false;
+
+    /**
      * Constructor for {@code SimpleBluetooth}
      * Allows for easy handling for setting up connections and bluetooth servers to connect to.
      * @param context context from the calling activity
@@ -134,8 +146,12 @@ public class SimpleBluetooth {
         this.mActivity = refActivity;
         this.bluetoothUtility = new BluetoothUtility(mContext, mActivity, mHandler);
         //register the state change receiver.
-        this.bluetoothBroadcastReceiver = BluetoothBroadcastReceiver
-                .register(mContext, bluetoothBroadcastRecieverCallback);
+        this.curType = InputStreamType.NORMAL;
+        /*
+        Trying onActivityResult instead of this for now.
+         */
+//        this.bluetoothBroadcastReceiver = BluetoothBroadcastReceiver
+//                .register(mContext, bluetoothBroadcastRecieverCallback);
         this.bluetoothStateReceiver = BluetoothStateReceiver
                 .register(mContext, stateRecieverCallback);
         //state boolean
@@ -155,14 +171,18 @@ public class SimpleBluetooth {
         this.mContext = context;
         this.mActivity = refActivity;
         this.customHandler = handler;
-
+        this.curType = InputStreamType.NORMAL;
         //check the handler.
         if(customHandler == null) throw
                 new NullPointerException("Custom BluetoothHandler cannot be null!");
         this.bluetoothUtility = new BluetoothUtility(mContext, mActivity, customHandler);
         //register the state change receiver.
-        this.bluetoothBroadcastReceiver = BluetoothBroadcastReceiver
-                .register(mContext, bluetoothBroadcastRecieverCallback);
+        /*
+        Trying onActivityResult instead of this method.
+         */
+//        this.bluetoothBroadcastReceiver = BluetoothBroadcastReceiver
+//                .register(mContext, bluetoothBroadcastRecieverCallback);
+
         this.bluetoothStateReceiver = BluetoothStateReceiver
                 .register(mContext, stateRecieverCallback);
         //state boolean
@@ -176,6 +196,14 @@ public class SimpleBluetooth {
      */
     public void setSimpleBluetoothListener(SimpleBluetoothListener simpleBluetoothListener) {
         this.mListener = simpleBluetoothListener;
+    }
+
+    /**
+     * Sets the input stream type for reading data from the bluetooth device.
+     * @param type the {@code InputStreamType}, can either be Normal or Buffered.
+     */
+    public void setInputStreamType(InputStreamType type) {
+        this.curType = type;
     }
 
     /**
@@ -255,6 +283,14 @@ public class SimpleBluetooth {
     public void scan(int requestCode) {
         Intent deviceDialog = new Intent(mActivity, DeviceDialog.class);
         mActivity.startActivityForResult(deviceDialog, requestCode);
+    }
+
+    public void scan() {
+        bluetoothUtility.scan();
+    }
+
+    public void cancelScan() {
+       bluetoothUtility.cancelScan();
     }
 
     /**
@@ -341,5 +377,9 @@ public class SimpleBluetooth {
         BluetoothBroadcastReceiver.safeUnregister(mContext, bluetoothBroadcastReceiver);
         BluetoothStateReceiver.safeUnregister(mContext, bluetoothStateReceiver);
         bluetoothUtility.closeConnections();
+    }
+
+    public BluetoothUtility getBluetoothUtility() {
+        return this.bluetoothUtility;
     }
 }

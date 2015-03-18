@@ -14,7 +14,7 @@ import com.devpaul.bluetoothutillib.R;
 import com.devpaul.bluetoothutillib.broadcasts.BluetoothBroadcastReceiver;
 import com.devpaul.bluetoothutillib.broadcasts.BluetoothStateReceiver;
 import com.devpaul.bluetoothutillib.broadcasts.FoundDeviceReceiver;
-import com.devpaul.bluetoothutillib.utils.BaseBluetoothActivity;
+import com.devpaul.bluetoothutillib.abstracts.BaseBluetoothActivity;
 import com.devpaul.bluetoothutillib.utils.BluetoothDeviceListAdapter;
 import com.devpaul.bluetoothutillib.utils.BluetoothUtility;
 
@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Dialog for choosing a paired bluetooth device or scanning for new, available devices.
  */
-public class DeviceDialog extends BaseBluetoothActivity {
+public class DeviceDialog extends BaseBluetoothActivity implements FoundDeviceReceiver.FoundDeviceReceiverCallBack {
 
     /**
      * List view for the devices.
@@ -84,16 +84,7 @@ public class DeviceDialog extends BaseBluetoothActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth_dialog);
-
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        //prepare the progress dialog.
-        prepareProgressDialog();
         //list view for all the items.
         listView = (ListView) findViewById(android.R.id.list);
         //start the bluetooth utility.
@@ -102,10 +93,18 @@ public class DeviceDialog extends BaseBluetoothActivity {
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestScan();
+                getSimpleBluetooth().scan();
             }
         });
+        super.onCreate(savedInstanceState);
+    }
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        //prepare the progress dialog.
+        prepareProgressDialog();
+        //add items to the list.
         populateList();
     }
 
@@ -114,13 +113,12 @@ public class DeviceDialog extends BaseBluetoothActivity {
      */
     private void prepareProgressDialog() {
         progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Please Wait");
         progressDialog.setMessage("Scanning...");
         progressDialog.setButton(ProgressDialog.BUTTON_NEGATIVE, getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if(bluetoothUtility != null) {
-                    cancelScan();
+                    getSimpleBluetooth().cancelScan();
                     progressDialog.dismiss();
                 }
             }

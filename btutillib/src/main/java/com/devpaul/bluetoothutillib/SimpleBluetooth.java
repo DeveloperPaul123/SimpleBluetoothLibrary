@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.devpaul.bluetoothutillib.broadcasts.BluetoothBroadcastReceiver;
 import com.devpaul.bluetoothutillib.broadcasts.BluetoothStateReceiver;
+import com.devpaul.bluetoothutillib.broadcasts.FoundDeviceReceiver;
 import com.devpaul.bluetoothutillib.dialogs.DeviceDialog;
 import com.devpaul.bluetoothutillib.handlers.BluetoothHandler;
 import com.devpaul.bluetoothutillib.utils.BluetoothUtility;
@@ -250,12 +251,14 @@ public class SimpleBluetooth {
     /**
      * Method that must be called to set everything up for this service.
      */
-    public void initializeSimpleBluetooth() {
+    public boolean initializeSimpleBluetooth() {
         if(!bluetoothUtility.checkIfEnabled()) {
             bluetoothUtility.enableBluetooth();
         } else {
             isInitialized = true;
         }
+
+        return isInitialized;
     }
 
     /**
@@ -285,10 +288,19 @@ public class SimpleBluetooth {
         mActivity.startActivityForResult(deviceDialog, requestCode);
     }
 
+    /**
+     * Performs a scan of devices directly and does not launch the device dialog. If you want to
+     * receive found devices then you need to register the
+     * {@link FoundDeviceReceiver} in the activity and you also
+     * need the {@link FoundDeviceReceiver.FoundDeviceReceiverCallBack}.
+     */
     public void scan() {
         bluetoothUtility.scan();
     }
 
+    /**
+     * Cancels the ongoing scan started by {@code scan()}
+     */
     public void cancelScan() {
        bluetoothUtility.cancelScan();
     }
@@ -379,6 +391,10 @@ public class SimpleBluetooth {
         bluetoothUtility.closeConnections();
     }
 
+    /**
+     * Gets the used bluetooth utility.
+     * @return the {@code BluetoothUtility}
+     */
     public BluetoothUtility getBluetoothUtility() {
         return this.bluetoothUtility;
     }

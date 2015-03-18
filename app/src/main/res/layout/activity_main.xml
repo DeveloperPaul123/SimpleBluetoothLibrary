@@ -43,4 +43,11 @@
         android:layout_height="wrap_content"
         android:text="Send"/>
 
+    <Button
+        android:id="@+id/test_activity_button"
+        android:layout_below="@+id/send_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test Activity"/>
+
 </RelativeLayout>

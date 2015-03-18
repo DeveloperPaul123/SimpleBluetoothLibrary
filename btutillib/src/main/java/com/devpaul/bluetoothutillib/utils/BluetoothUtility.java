@@ -236,6 +236,10 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
         }
     }
 
+    /**
+     * Sets the input stream type for the bluetooth device input stream.
+     * @param type, the input stream type.
+     */
     public void setInputStreamType(InputStreamType type) {
         this.streamType = type;
     }

@@ -26,7 +26,7 @@ public class MainActivity extends Activity {
     private SimpleBluetooth simpleBluetooth;
     private static final int SCAN_REQUEST = 119;
     private static final int CHOOSE_SERVER_REQUEST = 120;
-    private Button createServer, connectToServer, sendData;
+    private Button createServer, connectToServer, sendData, testActivity;
     private TextView connectionState;
     boolean isConnected;
     private EditText dataToSend;
@@ -67,12 +67,12 @@ public class MainActivity extends Activity {
 
             @Override
             public void onDiscoveryStarted() {
-                //scan for other devices.
+
             }
 
             @Override
             public void onDiscoveryFinished() {
-                //scan was finished or done.
+
             }
         });
     }
@@ -88,7 +88,14 @@ public class MainActivity extends Activity {
         connectToServer = (Button) findViewById(R.id.connect_to_server);
         dataToSend = (EditText) findViewById(R.id.data_to_send);
         sendData = (Button) findViewById(R.id.send_data);
-
+        testActivity = (Button) findViewById(R.id.test_activity_button);
+        testActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, TestActivity.class);
+                startActivity(intent);
+            }
+        });
         createServer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

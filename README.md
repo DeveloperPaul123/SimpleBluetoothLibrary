@@ -204,6 +204,8 @@ Finally, the library can handle A2DP protocols, although this has not yet been t
 <h2>Developed By</h2>
 **Paul T**
 
+Credit to **afollestad** for his material-dialog [library](https://github.com/afollestad/material-dialogs)
+
 <h2>License</h2>
 
 Copyright 2014 Paul T

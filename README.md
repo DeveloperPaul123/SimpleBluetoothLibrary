@@ -11,7 +11,7 @@ repositories {
 mavenCentral()
 }
 dependencies {
-  'com.github.developerpaul123.simplebluetoothlibrary:library:1.4'
+  'com.github.developerpaul123.simplebluetoothlibrary:library:1.3'
   }
   ````
 

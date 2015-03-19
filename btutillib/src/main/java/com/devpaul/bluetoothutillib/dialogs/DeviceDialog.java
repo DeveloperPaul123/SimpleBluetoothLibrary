@@ -1,8 +1,6 @@
 package com.devpaul.bluetoothutillib.dialogs;
 
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,11 +8,12 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.devpaul.bluetoothutillib.R;
+import com.devpaul.bluetoothutillib.abstracts.BaseBluetoothActivity;
 import com.devpaul.bluetoothutillib.broadcasts.BluetoothBroadcastReceiver;
 import com.devpaul.bluetoothutillib.broadcasts.BluetoothStateReceiver;
 import com.devpaul.bluetoothutillib.broadcasts.FoundDeviceReceiver;
-import com.devpaul.bluetoothutillib.abstracts.BaseBluetoothActivity;
 import com.devpaul.bluetoothutillib.utils.BluetoothDeviceListAdapter;
 import com.devpaul.bluetoothutillib.utils.BluetoothUtility;
 
@@ -80,7 +79,7 @@ public class DeviceDialog extends BaseBluetoothActivity implements FoundDeviceRe
     /**
      * Progress Dialog that is shown during scanning.
      */
-    private ProgressDialog progressDialog;
+    private MaterialDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,18 +111,22 @@ public class DeviceDialog extends BaseBluetoothActivity implements FoundDeviceRe
      * Helper method to prepare the progress dialog for showing.
      */
     private void prepareProgressDialog() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Scanning...");
-        progressDialog.setButton(ProgressDialog.BUTTON_NEGATIVE, getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if(bluetoothUtility != null) {
-                    getSimpleBluetooth().cancelScan();
-                    progressDialog.dismiss();
-                }
-            }
-        });
-        progressDialog.setCancelable(false);
+        progressDialog = new MaterialDialog.Builder(this)
+                .title("Please Wait")
+                .content("Scanning")
+                .progress(true, 0)
+                .positiveText("Cancel")
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        if(bluetoothUtility != null) {
+                            getSimpleBluetooth().cancelScan();
+                            progressDialog.dismiss();
+                        }
+                    }
+                })
+                .cancelable(false)
+                .build();
     }
 
     @Override

@@ -1,10 +1,10 @@
 package com.devpaul.bluetoothutillib.errordialogs;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Created by Paul Tsouchlos
@@ -18,16 +18,16 @@ public class InvalidMacAddressDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setMessage("Invalid Mac Address");
-        dialog.setTitle("Error");
-        dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dismiss();
-            }
-        });
-
-        return dialog.create();
+        MaterialDialog.Builder dialog = new MaterialDialog.Builder(getActivity())
+                .content("Invalid mac address.")
+                .title("Error")
+                .positiveText("Ok")
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        dialog.dismiss();
+                    }
+                });
+        return dialog.build();
     }
 }

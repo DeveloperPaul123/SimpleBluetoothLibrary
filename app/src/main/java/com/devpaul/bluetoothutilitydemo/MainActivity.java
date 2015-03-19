@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.devpaul.bluetoothutillib.SimpleBluetooth;
 import com.devpaul.bluetoothutillib.dialogs.DeviceDialog;
+import com.devpaul.bluetoothutillib.utils.BluetoothUtility;
 import com.devpaul.bluetoothutillib.utils.SimpleBluetoothListener;
 
 
@@ -37,6 +38,7 @@ public class MainActivity extends Activity {
         super.onResume();
         simpleBluetooth = new SimpleBluetooth(this, this);
         simpleBluetooth.initializeSimpleBluetooth();
+        simpleBluetooth.setInputStreamType(BluetoothUtility.InputStreamType.BUFFERED);
         simpleBluetooth.setSimpleBluetoothListener(new SimpleBluetoothListener() {
 
             @Override

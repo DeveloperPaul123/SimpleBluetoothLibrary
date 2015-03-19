@@ -1,14 +1,14 @@
 package com.devpaul.bluetoothutillib.errordialogs;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Created by Paul Tsouchlos
@@ -32,24 +32,24 @@ public class BluetoothDisabledErrorDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setTitle("Bluetooth Disabled");
-        dialog.setMessage("Bluetooth was disabled, would you like to re-enable.");
-        dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dismiss();
-                Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                getActivity().startActivity(intent);
-            }
-        });
-        dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dismiss();
-            }
-        });
+        MaterialDialog.Builder dialog = new MaterialDialog.Builder(getActivity())
+                .title("Bluetooth Disabled")
+                .content("Bluetooth was disabled, would you like to re-enable?")
+                .positiveText("Yes")
+                .negativeText("No")
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        dialog.dismiss();
+                        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                        getActivity().startActivity(intent);
+                    }
 
-        return dialog.create();
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.dismiss();
+                    }
+                });
+        return dialog.build();
     }
 }

@@ -444,7 +444,7 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                     connectToServerThread = null;
                 }
                 //check the mac address first.
-                if(bluetoothAdapter.checkBluetoothAddress(macAddress)) {
+                if(BluetoothAdapter.checkBluetoothAddress(macAddress)) {
                     bluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress);
                     connectToServerThread = new ConnectDeviceToServerThread(bluetoothDevice);
                     connectToServerThread.start();

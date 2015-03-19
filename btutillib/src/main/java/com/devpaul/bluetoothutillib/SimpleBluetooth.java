@@ -346,7 +346,7 @@ public class SimpleBluetooth {
 
     /**
      * Connects to a bluetooth server set up on another device.
-     * @param macAddress the mac address of the device. If this isn't valid, it won't connect.
+     * @param macAddress the mac address of the server device. If this isn't valid, it won't connect.
      */
     public void connectToBluetoothServer(String macAddress) {
         if(!isInitialized) {

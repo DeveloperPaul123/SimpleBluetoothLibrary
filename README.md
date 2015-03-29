@@ -1,5 +1,6 @@
 SimpleBluetoothLibrary
 ======================
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SimpleBluetoothLibrary-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1680)
 
 <h2>Description</h2>
 

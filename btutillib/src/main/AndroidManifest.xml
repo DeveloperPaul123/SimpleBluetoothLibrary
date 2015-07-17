@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.devpaul.bluetoothutillib" >
+    package="com.devpaul.bluetoothutillib">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
-    <application
-        android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
+    <application>
         <activity
-            android:name=".dialogs.DeviceDialog"
-            android:label="@string/title_activity_bluetooth_dialog"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar">
-        </activity>
-
+            android:name="com.devpaul.bluetoothutillib.dialogs.DeviceDialog"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" />
     </application>
-
-
 </manifest>

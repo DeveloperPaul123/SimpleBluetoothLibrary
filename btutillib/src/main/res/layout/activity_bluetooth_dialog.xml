@@ -9,17 +9,16 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/scan_button"
-        android:paddingTop="@dimen/activity_vertical_margin"
+        android:layout_alignParentTop="true"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:layout_alignParentTop="true"/>
+        android:paddingTop="@dimen/activity_vertical_margin" />
 
     <Button
         android:id="@+id/scan_button"
+        style="?android:borderlessButtonStyle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/card_white"
-        android:text="@string/scan"/>
-
+        android:text="@string/scan" />
 </RelativeLayout>

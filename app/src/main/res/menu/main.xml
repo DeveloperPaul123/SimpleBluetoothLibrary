@@ -1,12 +1,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity" >
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+    tools:context=".MainActivity">
+    <item
+        android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:showAsAction="never" />
-    <item android:id="@+id/scan"
-        android:title="Scan"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/scan"
         android:orderInCategory="101"
-        android:showAsAction="always"/>
+        android:title="Scan"
+        app:showAsAction="ifRoom" />
 </menu>

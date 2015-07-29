@@ -27,7 +27,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:support-v4:22.0.0'
     compile 'com.android.support:appcompat-v7:22.0.0'
-    compile 'com.afollestad:material-dialogs:0.6.4.6'
+    compile 'com.afollestad:material-dialogs:0.7.7.0'
 }
 
 apply from: '../maven_push.gradle'

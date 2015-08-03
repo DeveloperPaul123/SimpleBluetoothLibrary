@@ -1,9 +1,9 @@
 package com.devpaul.bluetoothutilitydemo;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,14 +22,14 @@ import com.devpaul.bluetoothutillib.utils.SimpleBluetoothListener;
 /**
  * Example activity and how to use the Simple bluetooth class.
  */
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
-    private SimpleBluetooth simpleBluetooth;
     private static final int SCAN_REQUEST = 119;
     private static final int CHOOSE_SERVER_REQUEST = 120;
+    boolean isConnected;
+    private SimpleBluetooth simpleBluetooth;
     private Button createServer, connectToServer, sendData, testActivity;
     private TextView connectionState;
-    boolean isConnected;
     private EditText dataToSend;
     private String curMacAddress;
 
@@ -108,7 +108,7 @@ public class MainActivity extends Activity {
         connectToServer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(curMacAddress != null) {
+                if (curMacAddress != null) {
                     simpleBluetooth.connectToBluetoothServer(curMacAddress);
                 } else {
                     simpleBluetooth.scan(CHOOSE_SERVER_REQUEST);
@@ -119,7 +119,7 @@ public class MainActivity extends Activity {
         sendData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isConnected) {
+                if (isConnected) {
                     simpleBluetooth.sendData(dataToSend.getText().toString());
                 }
             }
@@ -153,12 +153,12 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == SCAN_REQUEST || requestCode == CHOOSE_SERVER_REQUEST) {
+        if (requestCode == SCAN_REQUEST || requestCode == CHOOSE_SERVER_REQUEST) {
 
-            if(resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK) {
 
                 curMacAddress = data.getStringExtra(DeviceDialog.DEVICE_DIALOG_DEVICE_ADDRESS_EXTRA);
-                if(requestCode == SCAN_REQUEST) {
+                if (requestCode == SCAN_REQUEST) {
                     simpleBluetooth.connectToBluetoothDevice(curMacAddress);
                 } else {
                     simpleBluetooth.connectToBluetoothServer(curMacAddress);

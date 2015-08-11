@@ -2,7 +2,7 @@ package com.devpaul.bluetoothutillib.abstracts;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.devpaul.bluetoothutillib.SimpleBluetooth;
 import com.devpaul.bluetoothutillib.dialogs.DeviceDialog;
@@ -19,7 +19,7 @@ import com.devpaul.bluetoothutillib.utils.SimpleBluetoothListener;
  * - Sending data to the device.
  * Also allows for using support activity.
  */
-public abstract class SupportBaseBluetoothActivity extends ActionBarActivity
+public abstract class SupportBaseBluetoothActivity extends AppCompatActivity
         implements SimpleBluetoothListener{
     /**
      * The {@code SimpleBluetooth} object for this activity.

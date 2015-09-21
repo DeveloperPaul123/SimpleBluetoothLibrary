@@ -12,7 +12,7 @@ repositories {
 mavenCentral()
 }
 dependencies {
-  'com.github.developerpaul123.simplebluetoothlibrary:btlib:1.4'
+  compile 'com.github.developerpaul123.simplebluetoothlibrary:btlib:1.4'
 }
   ````
 

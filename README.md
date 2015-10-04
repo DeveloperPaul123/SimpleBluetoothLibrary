@@ -9,10 +9,12 @@ This library makes it easy for you to implement bluetooth in your Android app. T
 <h2>Dependency</h2>
 ````java
 repositories {
-mavenCentral()
+    ....
+    maven {url "http://jitpack.io"}
 }
 dependencies {
-  compile 'com.github.developerpaul123.simplebluetoothlibrary:btlib:1.4'
+    ....
+    compile  'com.github.DeveloperPaul123:SimpleBluetoothLibrary:1.4'
 }
   ````
 

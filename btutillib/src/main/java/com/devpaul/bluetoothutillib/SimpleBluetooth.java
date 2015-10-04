@@ -7,7 +7,6 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Message;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.devpaul.bluetoothutillib.broadcasts.BluetoothBroadcastReceiver;
@@ -267,7 +266,7 @@ public class SimpleBluetooth {
      * @param data The string of data to send.
      */
     public void sendData(String data) {
-        Log.d("SIMPLEBT", "Sending data: " + data);
+//        Log.d("SIMPLEBT", "Sending data: " + data);
         bluetoothUtility.sendData(data);
     }
 

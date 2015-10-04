@@ -394,13 +394,13 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                 if(connectedThread != null) {
                     connectedThread.write(data);
                 } else {
-                    Log.d("BluetoothUtility", "Connected Thread is null");
+//                    Log.d("BluetoothUtility", "Connected Thread is null");
                 }
             } else {
-                Log.d("BluetoothUtility", "Socket is not connected.");
+//                Log.d("BluetoothUtility", "Socket is not connected.");
             }
         } else {
-            Log.d("BluetoothUtility", "Socket is null");
+//            Log.d("BluetoothUtility", "Socket is null");
         }
     }
 
@@ -633,7 +633,7 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
             } catch (IOException e) {
-                Log.d("ConnectedThread", e.getMessage());
+//                Log.d("ConnectedThread", e.getMessage());
             }
 
             mInputStream = tmpIn;
@@ -698,10 +698,10 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
         public void write(String string) {
             if(mOutputStream != null) {
                 try {
-                    Log.d("ConnectedThread", "Writing data: " + string);
+//                    Log.d("ConnectedThread", "Writing data: " + string);
                     mOutputStream.write(string.getBytes());
                 } catch (IOException e) {
-                    Log.d("ConnectedThread",e.getMessage());
+//                    Log.d("ConnectedThread",e.getMessage());
                 }
             }
         }

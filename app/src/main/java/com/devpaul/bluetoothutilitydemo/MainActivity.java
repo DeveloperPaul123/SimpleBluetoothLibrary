@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("MAIN", "OnResume Called");
+//        Log.d("MAIN", "OnResume Called");
         //this check needs to be here to ensure that the simple bluetooth is not reset.
         //an issue was occuring when a client would connect to a server. When a client
         // connects they have to select a device, that is another activity, so after they

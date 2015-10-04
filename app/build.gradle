@@ -20,7 +20,12 @@ android {
     }
 }
 
+repositories {
+    maven {url "https://jitpack.io"}
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':btutillib')
+//    compile project(':btutillib')
+    compile 'com.github.DeveloperPaul123:SimpleBluetoothLibrary:ca1f0785cd'
 }

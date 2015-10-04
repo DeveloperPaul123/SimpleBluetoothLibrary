@@ -36,7 +36,16 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        simpleBluetooth = new SimpleBluetooth(this, this);
+        Log.d("MAIN", "OnResume Called");
+        //this check needs to be here to ensure that the simple bluetooth is not reset.
+        //an issue was occuring when a client would connect to a server. When a client
+        // connects they have to select a device, that is another activity, so after they
+        //select a device, this gets called again and the reference to the original simpleBluetooth
+        //object on the client side gets lost. Thus when send is called, nothing happens because it's
+        //a different object.
+        if(simpleBluetooth == null) {
+            simpleBluetooth = new SimpleBluetooth(this, this);
+        }
         simpleBluetooth.initializeSimpleBluetooth();
         simpleBluetooth.setInputStreamType(BluetoothUtility.InputStreamType.BUFFERED);
         simpleBluetooth.setSimpleBluetoothListener(new SimpleBluetoothListener() {
@@ -119,9 +128,7 @@ public class MainActivity extends Activity {
         sendData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isConnected) {
-                    simpleBluetooth.sendData(dataToSend.getText().toString());
-                }
+                simpleBluetooth.sendData(dataToSend.getText().toString());
             }
         });
 

@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -135,6 +136,11 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
     public static final int REQUEST_BLUETOOTH_SCAN = 10342;
 
     /**
+     * Request code for making the device discoverable.
+     */
+    public static final int REQUEST_MAKE_DEVICE_DISCOVERABLE = 1002;
+
+    /**
      * Constructor for {@code BluetoothUtility} This class is a wrapper class for a {@code
      * BluetoothAdapter} and makes a lot of its functionality easier.
      * @param context context from the calling activity or fragment.
@@ -202,6 +208,42 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
     }
 
     /**
+     * Checks to see if a device is paired. Returns true if it is paired, false otherwise.
+     * @param device the device to check
+     * @return true if paired, false otherwise.
+     */
+    public boolean checkIfPaired(BluetoothDevice device) {
+        Log.i("BluetoothUtility", "Checking device: " + device.getAddress());
+        ArrayList<BluetoothDevice> bonded = getPairedDevices();
+        for(BluetoothDevice pairedDevice: bonded) {
+            if(pairedDevice.getAddress().equals(device.getAddress())) {
+                Log.i("BluetoothUtility", "Found match: " + pairedDevice.getAddress() + " selected: " + device.getAddress());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean pairDevice(BluetoothDevice device) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return device.createBond();
+        } else {
+            try {
+                Method method = device.getClass().getMethod("createBond", (Class[]) null);
+                method.invoke(device, (Object[]) null);
+                return true;
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    /**
      * Enables the device to be discoverable for a certain duration.
      * @param duration the duration in milliseconds.
      */
@@ -209,7 +251,7 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
         Intent discoverableIntent = new
                 Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, duration);
-        mActivity.startActivity(discoverableIntent);
+        mActivity.startActivityForResult(discoverableIntent, REQUEST_MAKE_DEVICE_DISCOVERABLE);
     }
 
     /**

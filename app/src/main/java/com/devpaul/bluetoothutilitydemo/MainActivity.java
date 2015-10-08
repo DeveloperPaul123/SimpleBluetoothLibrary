@@ -165,6 +165,11 @@ public class MainActivity extends Activity {
             if(resultCode == RESULT_OK) {
 
                 curMacAddress = data.getStringExtra(DeviceDialog.DEVICE_DIALOG_DEVICE_ADDRESS_EXTRA);
+                boolean paired = simpleBluetooth.getBluetoothUtility()
+                        .checkIfPaired(simpleBluetooth.getBluetoothUtility()
+                                .findDeviceByMacAddress(curMacAddress));
+                String message = paired ? "is paired" : "is not paired";
+                Log.i("ActivityResult", "Device " + message);
                 if(requestCode == SCAN_REQUEST) {
                     simpleBluetooth.connectToBluetoothDevice(curMacAddress);
                 } else {

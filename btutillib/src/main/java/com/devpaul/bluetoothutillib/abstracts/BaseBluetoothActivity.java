@@ -20,8 +20,13 @@ import com.devpaul.bluetoothutillib.utils.SimpleBluetoothListener;
  * - Sending data to the device.
  *
  */
-public abstract class BaseBluetoothActivity extends Activity
-        implements SimpleBluetoothListener {
+public abstract class BaseBluetoothActivity extends Activity {
+
+    /**
+     * Must be overriden witha  simple bluetooth listener.
+     * @return a SimpleBluetoothListener. Now you don't have to override all the methods!
+     */
+    public abstract SimpleBluetoothListener getSimpleBluetoothListener();
 
     /**
      * The {@code SimpleBluetooth} object for this activity.
@@ -34,7 +39,7 @@ public abstract class BaseBluetoothActivity extends Activity
         if(simpleBluetooth.initializeSimpleBluetooth()) {
             onBluetoothEnabled();
         }
-        simpleBluetooth.setSimpleBluetoothListener(this);
+        simpleBluetooth.setSimpleBluetoothListener(getSimpleBluetoothListener());
         super.onCreate(savedInstanceState);
     }
 
@@ -45,6 +50,8 @@ public abstract class BaseBluetoothActivity extends Activity
         } else if(resultCode == RESULT_OK && requestCode == BluetoothUtility.REQUEST_BLUETOOTH_SCAN) {
             String macAddress = data.getStringExtra(DeviceDialog.DEVICE_DIALOG_DEVICE_ADDRESS_EXTRA);
             onDeviceSelected(macAddress);
+        } else if(resultCode == RESULT_OK && requestCode == BluetoothUtility.REQUEST_MAKE_DEVICE_DISCOVERABLE) {
+            // device is discoverable now.
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

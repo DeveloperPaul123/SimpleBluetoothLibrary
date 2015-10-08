@@ -10,6 +10,7 @@ import android.os.Message;
 import android.widget.Toast;
 
 import com.devpaul.bluetoothutillib.broadcasts.BluetoothBroadcastReceiver;
+import com.devpaul.bluetoothutillib.broadcasts.BluetoothPairingReceiver;
 import com.devpaul.bluetoothutillib.broadcasts.BluetoothStateReceiver;
 import com.devpaul.bluetoothutillib.broadcasts.FoundDeviceReceiver;
 import com.devpaul.bluetoothutillib.dialogs.DeviceDialog;
@@ -74,6 +75,22 @@ public class SimpleBluetooth {
         }
     };
 
+    private final BluetoothPairingReceiver.Callback bluetoothPairingReciever = new BluetoothPairingReceiver.Callback() {
+        @Override
+        public void onDevicePaired(BluetoothDevice device) {
+            if(mListener != null) {
+                mListener.onDevicePaired(device);
+            }
+        }
+
+        @Override
+        public void onDeviceUnpaired(BluetoothDevice device) {
+            if(mListener != null) {
+                mListener.onDeviceUnpaired(device);
+            }
+        }
+    };
+
     /**
      * {@link com.devpaul.bluetoothutillib.utils.SimpleBluetoothListener} for SimpleBluetooth
      */
@@ -103,6 +120,11 @@ public class SimpleBluetooth {
      * {@code BluetoothStateReceiver} that receives connection/disconnection intents.
      */
     private BluetoothStateReceiver bluetoothStateReceiver;
+
+    /**
+     * {@code BluetoothPairingReceiver} that receives pair/unpair intents.
+     */
+    private BluetoothPairingReceiver bluetoothPairingReceiver;
 
     /**
      * State boolean
@@ -148,6 +170,7 @@ public class SimpleBluetooth {
         this.bluetoothUtility = new BluetoothUtility(mContext, mActivity, mHandler);
         //register the state change receiver.
         this.curType = InputStreamType.NORMAL;
+
         /*
         Trying onActivityResult instead of this for now.
          */
@@ -155,6 +178,9 @@ public class SimpleBluetooth {
 //                .register(mContext, bluetoothBroadcastRecieverCallback);
         this.bluetoothStateReceiver = BluetoothStateReceiver
                 .register(mContext, stateRecieverCallback);
+
+        this.bluetoothPairingReceiver = BluetoothPairingReceiver
+                .register(mContext, bluetoothPairingReciever);
         //state boolean
         this.isInitialized = false;
     }
@@ -186,6 +212,8 @@ public class SimpleBluetooth {
 
         this.bluetoothStateReceiver = BluetoothStateReceiver
                 .register(mContext, stateRecieverCallback);
+        this.bluetoothPairingReceiver = BluetoothPairingReceiver
+                .register(mContext, bluetoothPairingReciever);
         //state boolean
         this.isInitialized = false;
     }
@@ -359,6 +387,7 @@ public class SimpleBluetooth {
 
     }
 
+
     /**
      * Connects to an A2DP device.
      * @param deviceName the name of the device to connect to.
@@ -387,8 +416,9 @@ public class SimpleBluetooth {
      * Ends all connections and unregister the receiver.
      */
     public void endSimpleBluetooth() {
-        BluetoothBroadcastReceiver.safeUnregister(mContext, bluetoothBroadcastReceiver);
+//        BluetoothBroadcastReceiver.safeUnregister(mContext, bluetoothBroadcastReceiver);
         BluetoothStateReceiver.safeUnregister(mContext, bluetoothStateReceiver);
+        BluetoothPairingReceiver.safeUnregister(mContext, bluetoothPairingReceiver);
         bluetoothUtility.closeConnections();
     }
 

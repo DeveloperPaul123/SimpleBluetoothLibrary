@@ -16,6 +16,7 @@ import com.devpaul.bluetoothutillib.broadcasts.BluetoothStateReceiver;
 import com.devpaul.bluetoothutillib.broadcasts.FoundDeviceReceiver;
 import com.devpaul.bluetoothutillib.utils.BluetoothDeviceListAdapter;
 import com.devpaul.bluetoothutillib.utils.BluetoothUtility;
+import com.devpaul.bluetoothutillib.utils.SimpleBluetoothListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,14 +156,56 @@ public class DeviceDialog extends BaseBluetoothActivity implements FoundDeviceRe
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                BluetoothDevice selectedDevice = devices.get(i);
-                Intent data = new Intent();
-                data.putExtra(DEVICE_DIALOG_DEVICE_ADDRESS_EXTRA, selectedDevice.getAddress());
-                data.putExtra(DEVICE_DIALOG_DEVICE_EXTRA, selectedDevice);
-                setResult(RESULT_OK, data);
-                finish();
+                BluetoothDevice selectedDevice = bdla.getItem(i);
+                if (checkDevicePaired(selectedDevice)) {
+                    Intent data = new Intent();
+                    data.putExtra(DEVICE_DIALOG_DEVICE_ADDRESS_EXTRA, selectedDevice.getAddress());
+                    data.putExtra(DEVICE_DIALOG_DEVICE_EXTRA, selectedDevice);
+                    setResult(RESULT_OK, data);
+                    finish();
+                } else {
+                    getSimpleBluetooth().getBluetoothUtility().pairDevice(selectedDevice);
+                }
+
             }
         });
+    }
+
+    @Override
+    public SimpleBluetoothListener getSimpleBluetoothListener() {
+        return new SimpleBluetoothListener() {
+            @Override
+            public void onDiscoveryStarted() {
+                super.onDiscoveryStarted();
+                if(progressDialog != null) {
+                    progressDialog.show();
+                }
+            }
+
+            @Override
+            public void onDiscoveryFinished() {
+                super.onDiscoveryFinished();
+                if(progressDialog != null) {
+                    if(progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                }
+            }
+
+            @Override
+            public void onDevicePaired(BluetoothDevice device) {
+                super.onDevicePaired(device);
+            }
+
+            @Override
+            public void onDeviceUnpaired(BluetoothDevice device) {
+                super.onDeviceUnpaired(device);
+            }
+        };
+    }
+
+    public boolean checkDevicePaired(BluetoothDevice device) {
+        return getSimpleBluetooth().getBluetoothUtility().checkIfPaired(device);
     }
 
     @Override
@@ -176,34 +219,5 @@ public class DeviceDialog extends BaseBluetoothActivity implements FoundDeviceRe
         bdla.notifyDataSetChanged();
     }
 
-    @Override
-    public void onBluetoothDataReceived(byte[] bytes, String data) {
 
-    }
-
-    @Override
-    public void onDeviceConnected(BluetoothDevice device) {
-        //shouldn't ever be called here.
-    }
-
-    @Override
-    public void onDeviceDisconnected(BluetoothDevice device) {
-        //shouldn't ever be called here.
-    }
-
-    @Override
-    public void onDiscoveryFinished() {
-        if(progressDialog != null) {
-            if(progressDialog.isShowing()) {
-                progressDialog.dismiss();
-            }
-        }
-    }
-
-    @Override
-    public void onDiscoveryStarted() {
-        if(progressDialog != null) {
-            progressDialog.show();
-        }
-    }
 }

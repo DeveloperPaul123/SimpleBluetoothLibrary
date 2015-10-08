@@ -19,12 +19,17 @@ import com.devpaul.bluetoothutillib.utils.SimpleBluetoothListener;
  * - Sending data to the device.
  * Also allows for using support activity.
  */
-public abstract class SupportBaseBluetoothActivity extends AppCompatActivity
-        implements SimpleBluetoothListener{
+public abstract class SupportBaseBluetoothActivity extends AppCompatActivity {
     /**
      * The {@code SimpleBluetooth} object for this activity.
      */
     private SimpleBluetooth simpleBluetooth;
+
+    /**
+     * Must be overriden witha  simple bluetooth listener.
+     * @return a SimpleBluetoothListener. Now you don't have to override all the methods!
+     */
+    public abstract SimpleBluetoothListener getSimpleBluetoothListener();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +37,7 @@ public abstract class SupportBaseBluetoothActivity extends AppCompatActivity
         if(simpleBluetooth.initializeSimpleBluetooth()) {
             onBluetoothEnabled();
         }
-        simpleBluetooth.setSimpleBluetoothListener(this);
+        simpleBluetooth.setSimpleBluetoothListener(getSimpleBluetoothListener());
         super.onCreate(savedInstanceState);
     }
 

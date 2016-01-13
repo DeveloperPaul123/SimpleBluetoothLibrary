@@ -21,8 +21,9 @@ import com.devpaul.bluetoothutillib.utils.SimpleBluetoothListener;
 import static com.devpaul.bluetoothutillib.utils.BluetoothUtility.InputStreamType;
 
 /**
- * Created by Paul Tsouchlos
- * Class for easily setting up bluetooth connections.
+ * Created by Paul T
+ * Class for easily setting up and managing bluetooth connections. Takes care of all the hard
+ * stuff for you.
  */
 public class SimpleBluetooth {
 
@@ -170,12 +171,6 @@ public class SimpleBluetooth {
         this.bluetoothUtility = new BluetoothUtility(mContext, mActivity, mHandler);
         //register the state change receiver.
         this.curType = InputStreamType.NORMAL;
-
-        /*
-        Trying onActivityResult instead of this for now.
-         */
-//        this.bluetoothBroadcastReceiver = BluetoothBroadcastReceiver
-//                .register(mContext, bluetoothBroadcastRecieverCallback);
         this.bluetoothStateReceiver = BluetoothStateReceiver
                 .register(mContext, stateRecieverCallback);
 
@@ -204,12 +199,6 @@ public class SimpleBluetooth {
                 new NullPointerException("Custom BluetoothHandler cannot be null!");
         this.bluetoothUtility = new BluetoothUtility(mContext, mActivity, customHandler);
         //register the state change receiver.
-        /*
-        Trying onActivityResult instead of this method.
-         */
-//        this.bluetoothBroadcastReceiver = BluetoothBroadcastReceiver
-//                .register(mContext, bluetoothBroadcastRecieverCallback);
-
         this.bluetoothStateReceiver = BluetoothStateReceiver
                 .register(mContext, stateRecieverCallback);
         this.bluetoothPairingReceiver = BluetoothPairingReceiver
@@ -277,11 +266,25 @@ public class SimpleBluetooth {
     };
 
     /**
-     * Method that must be called to set everything up for this service.
+     * Method that must be called to set everything up for this class.
      */
     public boolean initializeSimpleBluetooth() {
         if(!bluetoothUtility.checkIfEnabled()) {
             bluetoothUtility.enableBluetooth();
+        } else {
+            isInitialized = true;
+        }
+        return isInitialized;
+    }
+
+    /**
+     * Method that must be called (or initializeSimpleBluetooth()) to setup
+     * the simplebluetooth class.
+     * @return
+     */
+    public boolean initializeSimpleBluetoothSilent() {
+        if(!bluetoothUtility.checkIfEnabled()) {
+            bluetoothUtility.enableBluetoothSilent();
         } else {
             isInitialized = true;
         }
@@ -306,6 +309,13 @@ public class SimpleBluetooth {
         bluetoothUtility.sendData(data);
     }
 
+    /**
+     * Sends byte array data to the connected bluetooth device.
+     * @param data the data to send.
+     */
+    public void sendData(byte[] data) {
+        bluetoothUtility.sendData(data);
+    }
 
     /**
      * Starts the device dialog to get a device to connect to.

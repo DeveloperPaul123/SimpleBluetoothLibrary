@@ -13,7 +13,7 @@ import com.devpaul.bluetoothutillib.utils.SimpleBluetoothListener;
 public class TestActivity extends BaseBluetoothActivity {
 
     @Override
-    public SimpleBluetoothListener getListener() {
+    public SimpleBluetoothListener getSimpleBluetoothListener() {
         return new SimpleBluetoothListener() {
             @Override
             public void onBluetoothDataReceived(byte[] bytes, String data) {

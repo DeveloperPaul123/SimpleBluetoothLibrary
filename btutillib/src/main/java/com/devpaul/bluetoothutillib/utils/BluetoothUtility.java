@@ -279,6 +279,17 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
     }
 
     /**
+     * Enables bluetooth silently. I.e. without user interaction.
+     */
+    public void enableBluetoothSilent() {
+        if(bluetoothAdapter != null) {
+            if(!checkIfEnabled()) {
+                bluetoothAdapter.enable();
+            }
+        }
+    }
+
+    /**
      * Sets the input stream type for the bluetooth device input stream.
      * @param type, the input stream type.
      */
@@ -430,6 +441,27 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
      * @param data the string to send.
      */
     public void sendData(String data) {
+        //check to see if the socket is connected first.
+        if(bluetoothSocket != null) {
+            if(bluetoothSocket.isConnected()){
+                if(connectedThread != null) {
+                    connectedThread.write(data);
+                } else {
+//                    Log.d("BluetoothUtility", "Connected Thread is null");
+                }
+            } else {
+//                Log.d("BluetoothUtility", "Socket is not connected.");
+            }
+        } else {
+//            Log.d("BluetoothUtility", "Socket is null");
+        }
+    }
+
+    /**
+     * Sends a byte array of data to the connected bluetooth device.
+     * @param data the data to send.
+     */
+    public void sendData(byte[] data) {
         //check to see if the socket is connected first.
         if(bluetoothSocket != null) {
             if(bluetoothSocket.isConnected()){

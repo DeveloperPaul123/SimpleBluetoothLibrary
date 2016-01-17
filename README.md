@@ -10,7 +10,7 @@ This library makes it easy for you to implement bluetooth in your Android app. T
 ````java
 repositories {
     ....
-    maven {url "http://jitpack.io"}
+    maven {url "https://jitpack.io"}
 }
 dependencies {
     ....

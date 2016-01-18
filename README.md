@@ -14,7 +14,7 @@ repositories {
 }
 dependencies {
     ....
-    compile  'com.github.DeveloperPaul123:SimpleBluetoothLibrary:1.4'
+    compile  'com.github.DeveloperPaul123:SimpleBluetoothLibrary:1.4.2'
 }
   ````
 

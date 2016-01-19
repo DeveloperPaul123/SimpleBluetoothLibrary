@@ -2,6 +2,8 @@ SimpleBluetoothLibrary
 ======================
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SimpleBluetoothLibrary-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1680)
 
+[![](https://jitpack.io/v/DeveloperPaul123/SimpleBluetoothLibrary.svg)](https://jitpack.io/#DeveloperPaul123/SimpleBluetoothLibrary)
+
 <h2>Description</h2>
 
 This library makes it easy for you to implement bluetooth in your Android app. The SimpleBlueooth class handles all the hard work for you and all you have to do is make a few method calls. 

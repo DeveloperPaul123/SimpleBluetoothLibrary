@@ -7,7 +7,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Message;
-import android.widget.Toast;
+import android.support.design.widget.Snackbar;
 
 import com.devpaul.bluetoothutillib.broadcasts.BluetoothBroadcastReceiver;
 import com.devpaul.bluetoothutillib.broadcasts.BluetoothPairingReceiver;
@@ -157,6 +157,8 @@ public class SimpleBluetooth {
      */
     private boolean connectWithService = false;
 
+    private boolean shouldShowSnackbars = false;
+
     /**
      * Constructor for {@code SimpleBluetooth}
      * Allows for easy handling for setting up connections and bluetooth servers to connect to.
@@ -225,6 +227,14 @@ public class SimpleBluetooth {
     }
 
     /**
+     * Set whether or not messages should be shown with snackbars.
+     * @param show true to show them, false otherwise.
+     */
+    public void setShouldShowSnackbars(boolean show) {
+        shouldShowSnackbars = show;
+        bluetoothUtility.setShouldShowSnackbars(show);
+    }
+    /**
      * Default handler for Simple bluetooth.
      */
     private BluetoothHandler mHandler = new BluetoothHandler() {
@@ -250,7 +260,10 @@ public class SimpleBluetooth {
                     if(progressDialog != null) {
                         if(progressDialog.isShowing()) {
                             progressDialog.dismiss();
-                            Toast.makeText(mContext, "Device connected!", Toast.LENGTH_SHORT).show();
+                            if(shouldShowSnackbars) {
+                                Snackbar.make(mActivity.findViewById(android.R.id.content), "Device connected.",
+                                        Snackbar.LENGTH_SHORT).show();
+                            }
                         }
                     }
                     break;

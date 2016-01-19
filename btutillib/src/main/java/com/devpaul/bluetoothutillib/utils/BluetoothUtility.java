@@ -10,8 +10,8 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.devpaul.bluetoothutillib.errordialogs.InvalidMacAddressDialog;
 import com.devpaul.bluetoothutillib.handlers.BluetoothHandler;
@@ -124,6 +124,8 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
     public static enum InputStreamType {NORMAL, BUFFERED};
 
     private InputStreamType streamType = InputStreamType.NORMAL;
+
+    private boolean shouldShowSnackbars = true;
 
     /**
      * Bluetooth Request constant.
@@ -562,6 +564,14 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
     }
 
     /**
+     * Set if snackbar messages should be shown.
+     * @param shouldShow true if should be shown, false otherwise.
+     */
+    public void setShouldShowSnackbars(boolean shouldShow) {
+        this.shouldShowSnackbars = shouldShow;
+    }
+
+    /**
      * Thread used to accept incoming connections and initiate a server socket.
      */
     private class AcceptThread extends Thread {
@@ -658,7 +668,10 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(mContext, "Device not available.", Toast.LENGTH_SHORT).show();
+                        if(shouldShowSnackbars) {
+                            Snackbar.make(mActivity.findViewById(android.R.id.content), "Device not available.",
+                                    Snackbar.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 try {
@@ -849,7 +862,10 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(mContext, "Device not available.", Toast.LENGTH_SHORT).show();
+                        if(shouldShowSnackbars) {
+                            Snackbar.make(mActivity.findViewById(android.R.id.content), "Device not available.",
+                                    Snackbar.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 try {

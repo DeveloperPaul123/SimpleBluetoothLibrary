@@ -98,9 +98,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        simpleBluetooth = new SimpleBluetooth(this, this);
-        simpleBluetooth.initializeSimpleBluetooth();
-        simpleBluetooth.setSimpleBluetoothListener(new SimpleBluetoothListener() {
+        simpleBluetooth = new SimpleBluetooth(this, new SimpleBluetoothListener() {
 
             @Override
             public void onBluetoothDataReceived(byte[] bytes, String data) {
@@ -129,6 +127,7 @@ public class MainActivity extends Activity {
 
             }
         });
+        simpleBluetooth.initializeSimpleBluetooth();
     }
 
     @Override

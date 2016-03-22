@@ -44,48 +44,36 @@ public class MainActivity extends Activity {
         //object on the client side gets lost. Thus when send is called, nothing happens because it's
         //a different object.
         if(simpleBluetooth == null) {
-            simpleBluetooth = new SimpleBluetooth(this, this);
+            simpleBluetooth = new SimpleBluetooth(this, new SimpleBluetoothListener() {
+                @Override
+                public void onBluetoothDataReceived(byte[] bytes, String data) {
+                    //read the data coming in.
+                    Toast.makeText(MainActivity.this, "Data: " + data, Toast.LENGTH_SHORT).show();
+                    connectionState.setText("Data: " + data);
+                    isConnected = false;
+                    Log.w("SIMPLEBT", "Data received");
+                }
+
+                @Override
+                public void onDeviceConnected(BluetoothDevice device) {
+                    //a device is connected so you can now send stuff to it
+                    Toast.makeText(MainActivity.this, "Connected!", Toast.LENGTH_SHORT).show();
+                    connectionState.setText("Connected");
+                    isConnected = true;
+                    Log.w("SIMPLEBT", "Device connected");
+                }
+
+                @Override
+                public void onDeviceDisconnected(BluetoothDevice device) {
+                    // device was disconnected so connect it again?
+                    Toast.makeText(MainActivity.this, "Disconnected!", Toast.LENGTH_SHORT).show();
+                    connectionState.setText("Disconnected");
+                    Log.w("SIMPLEBT", "Device disconnected");
+                }
+            });
         }
         simpleBluetooth.initializeSimpleBluetooth();
         simpleBluetooth.setInputStreamType(BluetoothUtility.InputStreamType.BUFFERED);
-        simpleBluetooth.setSimpleBluetoothListener(new SimpleBluetoothListener() {
-
-            @Override
-            public void onBluetoothDataReceived(byte[] bytes, String data) {
-                //read the data coming in.
-                Toast.makeText(MainActivity.this, "Data: " + data, Toast.LENGTH_SHORT).show();
-                connectionState.setText("Data: " + data);
-                isConnected = false;
-                Log.w("SIMPLEBT", "Data received");
-            }
-
-            @Override
-            public void onDeviceConnected(BluetoothDevice device) {
-                //a device is connected so you can now send stuff to it
-                Toast.makeText(MainActivity.this, "Connected!", Toast.LENGTH_SHORT).show();
-                connectionState.setText("Connected");
-                isConnected = true;
-                Log.w("SIMPLEBT", "Device connected");
-            }
-
-            @Override
-            public void onDeviceDisconnected(BluetoothDevice device) {
-                // device was disconnected so connect it again?
-                Toast.makeText(MainActivity.this, "Disconnected!", Toast.LENGTH_SHORT).show();
-                connectionState.setText("Disconnected");
-                Log.w("SIMPLEBT", "Device disconnected");
-            }
-
-            @Override
-            public void onDiscoveryStarted() {
-
-            }
-
-            @Override
-            public void onDiscoveryFinished() {
-
-            }
-        });
     }
 
     @Override

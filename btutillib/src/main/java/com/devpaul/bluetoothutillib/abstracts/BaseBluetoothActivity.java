@@ -18,7 +18,6 @@ import com.devpaul.bluetoothutillib.utils.SimpleBluetoothListener;
  * - Connecting to a device.
  * - Receiving data from the device.
  * - Sending data to the device.
- *
  */
 public abstract class BaseBluetoothActivity extends Activity {
 
@@ -35,11 +34,10 @@ public abstract class BaseBluetoothActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        simpleBluetooth = new SimpleBluetooth(this, this);
+        simpleBluetooth = new SimpleBluetooth(this, getSimpleBluetoothListener());
         if(simpleBluetooth.initializeSimpleBluetooth()) {
             onBluetoothEnabled();
         }
-        simpleBluetooth.setSimpleBluetoothListener(getSimpleBluetoothListener());
         super.onCreate(savedInstanceState);
     }
 
@@ -97,6 +95,5 @@ public abstract class BaseBluetoothActivity extends Activity {
     public SimpleBluetooth getSimpleBluetooth() {
         return this.simpleBluetooth;
     }
-
 
 }

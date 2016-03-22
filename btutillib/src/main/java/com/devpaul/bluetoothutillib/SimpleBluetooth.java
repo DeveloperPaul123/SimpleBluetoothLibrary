@@ -2,12 +2,9 @@ package com.devpaul.bluetoothutillib;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Message;
-import android.support.design.widget.Snackbar;
 
 import com.devpaul.bluetoothutillib.broadcasts.BluetoothBroadcastReceiver;
 import com.devpaul.bluetoothutillib.broadcasts.BluetoothPairingReceiver;
@@ -15,6 +12,7 @@ import com.devpaul.bluetoothutillib.broadcasts.BluetoothStateReceiver;
 import com.devpaul.bluetoothutillib.broadcasts.FoundDeviceReceiver;
 import com.devpaul.bluetoothutillib.dialogs.DeviceDialog;
 import com.devpaul.bluetoothutillib.handlers.BluetoothHandler;
+import com.devpaul.bluetoothutillib.handlers.DefaultBluetoothHandler;
 import com.devpaul.bluetoothutillib.utils.BluetoothUtility;
 import com.devpaul.bluetoothutillib.utils.SimpleBluetoothListener;
 
@@ -103,11 +101,6 @@ public class SimpleBluetooth {
     private Context mContext;
 
     /**
-     * Reference to the calling activity.
-     */
-    private Activity mActivity;
-
-    /**
      * {@code BluetoothUtility used by SimpleBluetooth}
      */
     private BluetoothUtility bluetoothUtility;
@@ -157,20 +150,29 @@ public class SimpleBluetooth {
      */
     private boolean connectWithService = false;
 
+    /**
+     * Boolean for showing or hiding snackbars.
+     */
     private boolean shouldShowSnackbars = false;
+
+    /**
+     * Default handler for Simple bluetooth.
+     */
+    private BluetoothHandler mHandler;
 
     /**
      * Constructor for {@code SimpleBluetooth}
      * Allows for easy handling for setting up connections and bluetooth servers to connect to.
      * @param context context from the calling activity
-     * @param refActivity reference to the calling activity. Context and activity should match.
      */
-    public SimpleBluetooth(Context context, Activity refActivity) {
+    public SimpleBluetooth(Context context, SimpleBluetoothListener listener) {
         //initialize fields.
         this.progressDialog = new ProgressDialog(context);
         this.mContext = context;
-        this.mActivity = refActivity;
-        this.bluetoothUtility = new BluetoothUtility(mContext, mActivity, mHandler);
+        this.mListener = listener;
+        this.mHandler = new DefaultBluetoothHandler(listener, context);
+        this.mHandler.setShowSnackbars(shouldShowSnackbars);
+        this.bluetoothUtility = new BluetoothUtility(mContext, mHandler);
         //register the state change receiver.
         this.curType = InputStreamType.NORMAL;
         this.bluetoothStateReceiver = BluetoothStateReceiver
@@ -186,20 +188,18 @@ public class SimpleBluetooth {
      * Constructor for {@code SimpleBluetooth} Use this constructor to provide your own custom bluetooth
      * handler.
      * @param context the context of the calling activity.
-     * @param refActivity reference to the calling activity. Context and activity should match.
      * @param handler custom {@code BluetoothHandler} for bluetooth event call backs.
      */
-    public SimpleBluetooth(Context context, Activity refActivity, BluetoothHandler handler) {
+    public SimpleBluetooth(Context context, BluetoothHandler handler) {
         //initialize fields.
         this.progressDialog = new ProgressDialog(context);
         this.mContext = context;
-        this.mActivity = refActivity;
         this.customHandler = handler;
         this.curType = InputStreamType.NORMAL;
         //check the handler.
         if(customHandler == null) throw
                 new NullPointerException("Custom BluetoothHandler cannot be null!");
-        this.bluetoothUtility = new BluetoothUtility(mContext, mActivity, customHandler);
+        this.bluetoothUtility = new BluetoothUtility(mContext, customHandler);
         //register the state change receiver.
         this.bluetoothStateReceiver = BluetoothStateReceiver
                 .register(mContext, stateRecieverCallback);
@@ -232,51 +232,9 @@ public class SimpleBluetooth {
      */
     public void setShouldShowSnackbars(boolean show) {
         shouldShowSnackbars = show;
+        mHandler.setShowSnackbars(show);
         bluetoothUtility.setShouldShowSnackbars(show);
     }
-    /**
-     * Default handler for Simple bluetooth.
-     */
-    private BluetoothHandler mHandler = new BluetoothHandler() {
-        @Override
-        public void handleMessage(Message message) {
-            switch (message.what) {
-                case MESSAGE_READ:
-                    byte[] readBuf = (byte[]) message.obj;
-                    String readMessage = new String(readBuf);
-                    if(readBuf != null && readBuf.length > 0) {
-                        if(mListener != null)
-                            mListener.onBluetoothDataReceived(readBuf, readMessage);
-                    }
-                    break;
-                case MESSAGE_WAIT_FOR_CONNECTION:
-                    if(progressDialog != null) {
-                        progressDialog.setTitle("");
-                        progressDialog.setMessage("Waiting...");
-                        progressDialog.show();
-                    }
-                    break;
-                case MESSAGE_CONNECTION_MADE:
-                    if(progressDialog != null) {
-                        if(progressDialog.isShowing()) {
-                            progressDialog.dismiss();
-                            if(shouldShowSnackbars) {
-                                Snackbar.make(mActivity.findViewById(android.R.id.content), "Device connected.",
-                                        Snackbar.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                    break;
-                case MESSAGE_A2DP_PROXY_RECEIVED:
-                    BluetoothA2dp bluetoothA2dp = (BluetoothA2dp) message.obj;
-                    bluetoothUtility.connectA2DPProxy(bluetoothA2dp, a2dpDevice);
-                    break;
-                default:
-                    break;
-            }
-
-        }
-    };
 
     /**
      * Method that must be called to set everything up for this class.
@@ -336,8 +294,10 @@ public class SimpleBluetooth {
      *                    OnActivityResult.
      */
     public void scan(int requestCode) {
-        Intent deviceDialog = new Intent(mActivity, DeviceDialog.class);
-        mActivity.startActivityForResult(deviceDialog, requestCode);
+        Intent deviceDialog = new Intent(mContext, DeviceDialog.class);
+        if(mContext instanceof Activity) {
+            ((Activity)mContext).startActivityForResult(deviceDialog, requestCode);
+        }
     }
 
     /**
@@ -418,12 +378,11 @@ public class SimpleBluetooth {
     public void connectToA2DPDevice(String deviceName) {
         if(!isInitialized) {
             throw new IllegalStateException("Must initialize before using any other method in class" +
-                    "SimpleBluetooth! Call initializeSimpleBluetooth()");
+                    "SimpleBluetooth. Call initializeSimpleBluetooth()");
         } else {
             a2dpDevice = bluetoothUtility.findDeviceByName(deviceName);
             bluetoothUtility.setUpA2DPConnection();
         }
-
     }
 
     /**

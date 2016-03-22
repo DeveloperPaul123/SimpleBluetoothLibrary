@@ -50,11 +50,6 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
     private Context mContext;
 
     /**
-     * Activity field, should be same as the context.
-     */
-    private Activity mActivity;
-
-    /**
      * Current {@code BluetoothSocket}
      */
     private BluetoothSocket bluetoothSocket;
@@ -146,11 +141,10 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
      * Constructor for {@code BluetoothUtility} This class is a wrapper class for a {@code
      * BluetoothAdapter} and makes a lot of its functionality easier.
      * @param context context from the calling activity or fragment.
-     * @param refActivity reference to the calling activity.
      * @param handler a handler for handling read data and other messages. See
      * {@link com.devpaul.bluetoothutillib.handlers.BluetoothHandler} for more information.
      */
-    public BluetoothUtility(Context context, Activity refActivity, BluetoothHandler handler) {
+    public BluetoothUtility(Context context, BluetoothHandler handler) {
         //assign the fields.
         this.mContext = context;
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -158,7 +152,6 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
             //bluetooth not supported.
             //TODO
         }
-        this.mActivity = refActivity;
         this.bluetoothHandler = handler;
     }
 
@@ -253,7 +246,9 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
         Intent discoverableIntent = new
                 Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, duration);
-        mActivity.startActivityForResult(discoverableIntent, REQUEST_MAKE_DEVICE_DISCOVERABLE);
+        if(mContext instanceof Activity) {
+            ((Activity)mContext).startActivityForResult(discoverableIntent, REQUEST_MAKE_DEVICE_DISCOVERABLE);
+        }
     }
 
     /**
@@ -275,7 +270,9 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
         if(bluetoothAdapter != null) {
             if(!checkIfEnabled()) {
                 Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                mActivity.startActivityForResult(enableBluetooth, REQUEST_BLUETOOTH);
+                if(mContext instanceof Activity) {
+                    ((Activity)mContext).startActivityForResult(enableBluetooth, REQUEST_BLUETOOTH);
+                }
             }
         }
     }
@@ -328,8 +325,10 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                     connectThread.start();
                 } else {
                     //mac address not valid.
-                    InvalidMacAddressDialog imad = InvalidMacAddressDialog.newInstance();
-                    imad.show(mActivity.getFragmentManager(), "ERROR");
+                    if(mContext instanceof Activity) {
+                        InvalidMacAddressDialog imad = InvalidMacAddressDialog.newInstance();
+                        imad.show(((Activity)mContext).getFragmentManager(), "ERROR");
+                    }
                 }
 
             }
@@ -532,8 +531,10 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                     connectToServerThread.start();
                 } else {
                     //mac address not valid.
-                    InvalidMacAddressDialog imad = InvalidMacAddressDialog.newInstance();
-                    imad.show(mActivity.getFragmentManager(), "ERROR");
+                    if(mContext instanceof Activity) {
+                        InvalidMacAddressDialog imad = InvalidMacAddressDialog.newInstance();
+                        imad.show(((Activity)mContext).getFragmentManager(), "ERROR");
+                    }
                 }
 
             }
@@ -665,15 +666,17 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                 mmSocket.connect();
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and get out
-                mActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(shouldShowSnackbars) {
-                            Snackbar.make(mActivity.findViewById(android.R.id.content), "Device not available.",
-                                    Snackbar.LENGTH_SHORT).show();
+                if(mContext instanceof Activity) {
+                    ((Activity)mContext).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(shouldShowSnackbars) {
+                                Snackbar.make(((Activity)mContext).findViewById(android.R.id.content), "Device not available.",
+                                        Snackbar.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+                }
                 try {
                     mmSocket.close();
                 } catch (IOException closeException) { }
@@ -756,19 +759,13 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                 while (true) {
                     try {
                         if(reader.ready()) {
+                            //read a single line.
                             String message = reader.readLine();
-                            bluetoothHandler.obtainMessage(BluetoothHandler.MESSAGE_READ, -1, -1, message)
+                            buffer = message.getBytes();
+                            bytes = buffer.length;
+                            bluetoothHandler.obtainMessage(BluetoothHandler.MESSAGE_READ, bytes, -1, buffer)
                                     .sendToTarget();
                         }
-//                        bytes = mInputStream.available();
-//                        if(bytes > 0) {
-//                            buffer = new byte[bytes];
-//                            // Read from the InputStream
-//                            bytes = mInputStream.read(buffer);
-//                            // Send the obtained bytes to the UI activity
-//                            bluetoothHandler.obtainMessage(BluetoothHandler.MESSAGE_READ, bytes, -1, buffer)
-//                                    .sendToTarget();
-//                        }
                     } catch (IOException e) {
                         break;
                     }
@@ -859,15 +856,17 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                 mmSocket.connect();
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and get out
-                mActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(shouldShowSnackbars) {
-                            Snackbar.make(mActivity.findViewById(android.R.id.content), "Device not available.",
-                                    Snackbar.LENGTH_SHORT).show();
+                if(mContext instanceof Activity) {
+                    ((Activity)mContext).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(shouldShowSnackbars) {
+                                Snackbar.make(((Activity)mContext).findViewById(android.R.id.content), "Device not available.",
+                                        Snackbar.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+                }
                 try {
                     mmSocket.close();
                 } catch (IOException closeException) {

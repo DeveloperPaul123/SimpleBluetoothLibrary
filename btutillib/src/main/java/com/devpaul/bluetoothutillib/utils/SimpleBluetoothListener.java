@@ -1,5 +1,6 @@
 package com.devpaul.bluetoothutillib.utils;
 
+import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothDevice;
 
 /**
@@ -91,6 +92,14 @@ public abstract class SimpleBluetoothListener {
      * @param device the unpaired device.
      */
     public void onDeviceUnpaired(BluetoothDevice device) {
+
+    }
+
+    /**
+     * Called when a request is made to connect to an A2dp device.
+     * @param bluetoothA2dp the a2dp device.
+     */
+    public void onBluetoothA2DPRequested(BluetoothA2dp bluetoothA2dp) {
 
     }
 }

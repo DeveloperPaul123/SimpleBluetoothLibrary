@@ -757,9 +757,10 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                         if(reader.ready()) {
                             //read a single line.
                             String message = reader.readLine();
-                            buffer = message.getBytes();
-                            bytes = buffer.length;
-                            bluetoothHandler.obtainMessage(BluetoothHandler.MESSAGE_READ, bytes, -1, buffer)
+                            //don't use the regular buffer. 
+                            byte[] byteString = message.getBytes();
+                            bytes = byteString.length;
+                            bluetoothHandler.obtainMessage(BluetoothHandler.MESSAGE_READ, bytes, -1, byteString)
                                     .sendToTarget();
                         }
                     } catch (IOException e) {

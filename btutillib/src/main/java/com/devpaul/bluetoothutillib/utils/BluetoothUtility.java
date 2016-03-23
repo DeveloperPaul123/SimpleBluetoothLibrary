@@ -731,7 +731,7 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
         }
 
         public void run() {
-            byte[] buffer;  // buffer store for the stream
+            byte[] buffer = new byte[1024]; // buffer store for the stream
             int bytes; // bytes returned from read()
             BufferedReader reader;
 
@@ -739,15 +739,11 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                 // Keep listening to the InputStream until an exception occurs
                 while (true) {
                     try {
-                        bytes = mInputStream.available();
-                        if(bytes > 0) {
-                            buffer = new byte[bytes];
-                            // Read from the InputStream
-                            bytes = mInputStream.read(buffer);
-                            // Send the obtained bytes to the UI activity
-                            bluetoothHandler.obtainMessage(BluetoothHandler.MESSAGE_READ, bytes, -1, buffer)
-                                    .sendToTarget();
-                        }
+                        // Read from the InputStream
+                        bytes = mInputStream.read(buffer);
+                        // Send the obtained bytes to the UI activity
+                        bluetoothHandler.obtainMessage(BluetoothHandler.MESSAGE_READ, bytes, -1, buffer)
+                                .sendToTarget();
                     } catch (IOException e) {
                         break;
                     }

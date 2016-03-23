@@ -29,7 +29,9 @@ public class DefaultBluetoothHandler extends BluetoothHandler {
         switch (message.what) {
             case MESSAGE_READ:
                 byte[] readBuf = (byte[]) message.obj;
-                String readMessage = new String(readBuf);
+                //get how many bytes were actually read.
+                int datalength = message.arg1;
+                String readMessage = new String(readBuf, 0, datalength);
                 if(readBuf.length > 0) {
                     if(mListener != null)
                         mListener.onBluetoothDataReceived(readBuf, readMessage);

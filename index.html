@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Bluetooth Simplified : SimpleBluetoothLibrary is an Android library made to make using bluetooth painless and easy.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Bluetooth Simplified</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/DeveloperPaul123/SimpleBluetoothLibrary">View on GitHub</a>
+
+          <h1 id="project_title">Bluetooth Simplified</h1>
+          <h2 id="project_tagline">SimpleBluetoothLibrary is an Android library made to make using bluetooth painless and easy.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/DeveloperPaul123/SimpleBluetoothLibrary/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/DeveloperPaul123/SimpleBluetoothLibrary/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="simplebluetoothlibrary" class="anchor" href="#simplebluetoothlibrary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SimpleBluetoothLibrary</h1>
+
+<p><a href="http://android-arsenal.com/details/1/1680"><img src="https://img.shields.io/badge/Android%20Arsenal-SimpleBluetoothLibrary-brightgreen.svg?style=flat" alt="Android Arsenal"></a></p>
+
+<p><a href="https://jitpack.io/#DeveloperPaul123/SimpleBluetoothLibrary"><img src="https://jitpack.io/v/DeveloperPaul123/SimpleBluetoothLibrary.svg" alt=""></a></p>
+
+<h2>
+<a id="description" class="anchor" href="#description" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Description</h2>
+
+<p>This library makes it easy for you to implement bluetooth in your Android app. The SimpleBlueooth class handles all the hard work for you and all you have to do is make a few method calls. </p>
+
+<h2>
+<a id="dependency" class="anchor" href="#dependency" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dependency</h2>
+
+<div class="highlight highlight-source-java"><pre>repositories {
+    <span class="pl-c1">....</span>
+    maven {url <span class="pl-s"><span class="pl-pds">"</span>https://jitpack.io<span class="pl-pds">"</span></span>}
+}
+dependencies {
+    <span class="pl-c1">....</span>
+    compile  <span class="pl-s"><span class="pl-pds">'</span>com.github.DeveloperPaul123:SimpleBluetoothLibrary:1.4.2<span class="pl-pds">'</span></span>
+}</pre></div>
+
+<h2>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Requirements</h2>
+
+<p>Min SDK Level is 14 or Android IceCreamSandwich</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>This library provides a <code>BaseBluetoothActivity</code> that you inherit from to easily take care of:</p>
+
+<ul>
+<li>Enabling bluetooth</li>
+<li>Scanning for new devices.</li>
+<li>Connecting to a device.</li>
+<li>Receiving data from the device.</li>
+<li>Sending data to the device.</li>
+</ul>
+
+<p>As an example:</p>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">TestActivity</span> <span class="pl-k">extends</span> <span class="pl-e">BaseBluetoothActivity</span> {
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">protected</span> <span class="pl-k">void</span> <span class="pl-en">onCreate</span>(<span class="pl-smi">Bundle</span> <span class="pl-v">savedInstanceState</span>) {
+        <span class="pl-v">super</span><span class="pl-k">.</span>onCreate(savedInstanceState);
+        <span class="pl-c">//set your content view here. </span>
+    }
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">onBluetoothEnabled</span>() {
+        <span class="pl-v">super</span><span class="pl-k">.</span>onBluetoothEnabled();
+        <span class="pl-c">//this is always called, when bluetooth is enabled.</span>
+        <span class="pl-c">//by default the activity will start a scan. If you don't want this</span>
+        <span class="pl-c">//delete the super call. </span>
+    }
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">onDeviceSelected</span>(<span class="pl-smi">String</span> <span class="pl-v">macAddress</span>) {
+        <span class="pl-v">super</span><span class="pl-k">.</span>onDeviceSelected(macAddress);
+        <span class="pl-c">//this is called when a device is selected from the scan activity. By default,</span>
+        <span class="pl-c">//the selected device will be connected to. If you don't want this, delete the super call.</span>
+    }
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">onBluetoothDataReceived</span>(<span class="pl-k">byte</span>[] <span class="pl-v">bytes</span>, <span class="pl-smi">String</span> <span class="pl-v">data</span>) {
+       <span class="pl-c">//called when data is received from the device. </span>
+    }
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">onDeviceConnected</span>(<span class="pl-smi">BluetoothDevice</span> <span class="pl-v">device</span>) {
+
+    }
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">onDeviceDisconnected</span>(<span class="pl-smi">BluetoothDevice</span> <span class="pl-v">device</span>) {
+
+    }
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">onDiscoveryStarted</span>() {
+
+    }
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">onDiscoveryFinished</span>() {
+
+    }
+}</pre></div>
+
+<p>Alternatively you can use the <code>SimpleBluetooth</code> class yourself:</p>
+
+<div class="highlight highlight-source-java"><pre>
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">MainActivity</span> <span class="pl-k">extends</span> <span class="pl-e">Activity</span> {
+
+    <span class="pl-k">private</span> <span class="pl-smi">SimpleBluetooth</span> simpleBluetooth;
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-k">final</span> <span class="pl-k">int</span> <span class="pl-c1">SCAN_REQUEST</span> <span class="pl-k">=</span> <span class="pl-c1">119</span>;
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-k">final</span> <span class="pl-k">int</span> <span class="pl-c1">CHOOSE_SERVER_REQUEST</span> <span class="pl-k">=</span> <span class="pl-c1">120</span>;
+    <span class="pl-c">//...other code....//</span>
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> curMacAddress;
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">protected</span> <span class="pl-k">void</span> <span class="pl-en">onResume</span>() {
+        <span class="pl-v">super</span><span class="pl-k">.</span>onResume();
+        simpleBluetooth <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">SimpleBluetooth</span>(<span class="pl-v">this</span>, <span class="pl-k">new</span> <span class="pl-smi">SimpleBluetoothListener</span>() {
+
+            <span class="pl-k">@Override</span>
+            <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">onBluetoothDataReceived</span>(<span class="pl-k">byte</span>[] <span class="pl-v">bytes</span>, <span class="pl-smi">String</span> <span class="pl-v">data</span>) {
+                <span class="pl-c">//read the data coming in.</span>
+            }
+
+            <span class="pl-k">@Override</span>
+            <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">onDeviceConnected</span>(<span class="pl-smi">BluetoothDevice</span> <span class="pl-v">device</span>) {
+                <span class="pl-c">//a device is connected so you can now send stuff to it</span>
+
+            }
+
+            <span class="pl-k">@Override</span>
+            <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">onDeviceDisconnected</span>(<span class="pl-smi">BluetoothDevice</span> <span class="pl-v">device</span>) {
+                <span class="pl-c">// device was disconnected so connect it again?</span>
+
+            }
+
+            <span class="pl-k">@Override</span>
+            <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">onDiscoveryStarted</span>() {
+
+            }
+
+            <span class="pl-k">@Override</span>
+            <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">onDiscoveryFinished</span>() {
+
+            }
+        });
+        simpleBluetooth<span class="pl-k">.</span>initializeSimpleBluetooth();
+    }
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">protected</span> <span class="pl-k">void</span> <span class="pl-en">onCreate</span>(<span class="pl-smi">Bundle</span> <span class="pl-v">savedInstanceState</span>) {
+        <span class="pl-v">super</span><span class="pl-k">.</span>onCreate(savedInstanceState);
+        setContentView(<span class="pl-smi">R</span><span class="pl-k">.</span>layout<span class="pl-k">.</span>activity_main);
+        <span class="pl-c">//...other code...//</span>
+    }
+
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">boolean</span> <span class="pl-en">onCreateOptionsMenu</span>(<span class="pl-smi">Menu</span> <span class="pl-v">menu</span>) {
+        <span class="pl-c">// Inflate the menu; this adds items to the action bar if it is present.</span>
+        getMenuInflater()<span class="pl-k">.</span>inflate(<span class="pl-smi">R</span><span class="pl-k">.</span>menu<span class="pl-k">.</span>main, menu);
+        <span class="pl-k">return</span> <span class="pl-c1">true</span>;
+    }
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">boolean</span> <span class="pl-en">onOptionsItemSelected</span>(<span class="pl-smi">MenuItem</span> <span class="pl-v">item</span>) {
+        <span class="pl-c">// Handle action bar item clicks here. The action bar will</span>
+        <span class="pl-c">// automatically handle clicks on the Home/Up button, so long</span>
+        <span class="pl-c">// as you specify a parent activity in AndroidManifest.xml.</span>
+        <span class="pl-k">int</span> id <span class="pl-k">=</span> item<span class="pl-k">.</span>getItemId();
+        <span class="pl-k">if</span> (id <span class="pl-k">==</span> <span class="pl-smi">R</span><span class="pl-k">.</span>id<span class="pl-k">.</span>action_settings) {
+            <span class="pl-k">return</span> <span class="pl-c1">true</span>;
+        } <span class="pl-k">else</span> <span class="pl-k">if</span> (id <span class="pl-k">==</span> <span class="pl-smi">R</span><span class="pl-k">.</span>id<span class="pl-k">.</span>scan) {
+            simpleBluetooth<span class="pl-k">.</span>scan(<span class="pl-c1">SCAN_REQUEST</span>);
+            <span class="pl-k">return</span> <span class="pl-c1">true</span>;
+        }
+        <span class="pl-k">return</span> <span class="pl-v">super</span><span class="pl-k">.</span>onOptionsItemSelected(item);
+    }
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">protected</span> <span class="pl-k">void</span> <span class="pl-en">onActivityResult</span>(<span class="pl-k">int</span> <span class="pl-v">requestCode</span>, <span class="pl-k">int</span> <span class="pl-v">resultCode</span>, <span class="pl-smi">Intent</span> <span class="pl-v">data</span>) {
+        <span class="pl-v">super</span><span class="pl-k">.</span>onActivityResult(requestCode, resultCode, data);
+        <span class="pl-k">if</span>(requestCode <span class="pl-k">==</span> <span class="pl-c1">SCAN_REQUEST</span> <span class="pl-k">||</span> requestCode <span class="pl-k">==</span> <span class="pl-c1">CHOOSE_SERVER_REQUEST</span>) {
+
+            <span class="pl-k">if</span>(resultCode <span class="pl-k">==</span> <span class="pl-c1">RESULT_OK</span>) {
+
+                curMacAddress <span class="pl-k">=</span> data<span class="pl-k">.</span>getStringExtra(<span class="pl-smi">DeviceDialog</span><span class="pl-c1"><span class="pl-k">.</span>DEVICE_DIALOG_DEVICE_ADDRESS_EXTRA</span>);
+                <span class="pl-k">if</span>(requestCode <span class="pl-k">==</span> <span class="pl-c1">SCAN_REQUEST</span>) {
+                    simpleBluetooth<span class="pl-k">.</span>connectToBluetoothDevice(curMacAddress);
+                } <span class="pl-k">else</span> {
+                    simpleBluetooth<span class="pl-k">.</span>connectToBluetoothServer(curMacAddress);
+                }
+
+            }
+        }
+    }
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">protected</span> <span class="pl-k">void</span> <span class="pl-en">onDestroy</span>() {
+        <span class="pl-v">super</span><span class="pl-k">.</span>onDestroy();
+        simpleBluetooth<span class="pl-k">.</span>endSimpleBluetooth();
+    }
+}</pre></div>
+
+<p>Finally, the library allows for an alternative way to receive data. Say you're using an Arduino or something similar that is sending out a newline character at the end of every loop. You can read this data using a buffered input type through the following line:</p>
+
+<div class="highlight highlight-source-java"><pre>simpleBluetooth<span class="pl-k">.</span>setInputStreamType(<span class="pl-smi">BluetoothUtility</span><span class="pl-k">.</span><span class="pl-smi">InputStreamType</span><span class="pl-c1"><span class="pl-k">.</span>BUFFERED</span>);</pre></div>
+
+<p>This will case the input type to change and you should receieve the data line by line. </p>
+
+<p>Additionally, this library allows for the creation and connection to a bluetooth server. Simply call:</p>
+
+<div class="highlight highlight-source-java"><pre>simpleBluetooth<span class="pl-k">.</span>createBluetoothServerConnection();</pre></div>
+
+<p>and on the connecting device call:</p>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-c">//curMacAddress is the address of the server device.</span>
+simpleBluetooth<span class="pl-k">.</span>connectToBluetoothServer(curMacAddress);</pre></div>
+
+<p>Finally, the library can handle A2DP protocols, although this has not yet been tested. </p>
+
+<h2>
+<a id="developed-by" class="anchor" href="#developed-by" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Developed By</h2>
+
+<p><strong>Paul T</strong></p>
+
+<p>Credit to <strong>afollestad</strong> for his material-dialog <a href="https://github.com/afollestad/material-dialogs">library</a></p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>Copyright 2014 Paul T</p>
+
+<p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.</p>
+
+<p>You may obtain a copy of the License at</p>
+
+<p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+
+<p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Bluetooth Simplified maintained by <a href="https://github.com/DeveloperPaul123">DeveloperPaul123</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>

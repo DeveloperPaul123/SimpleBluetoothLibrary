@@ -16,7 +16,7 @@ repositories {
 }
 dependencies {
     ....
-    compile  'com.github.DeveloperPaul123:SimpleBluetoothLibrary:1.4.2'
+    compile  'com.github.DeveloperPaul123:SimpleBluetoothLibrary:1.5.1'
 }
   ````
 
@@ -212,7 +212,7 @@ Credit to **afollestad** for his material-dialog [library](https://github.com/af
 
 <h2>License</h2>
 
-Copyright 2014 Paul T
+Copyright 2014 - 2016 Paul T
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 

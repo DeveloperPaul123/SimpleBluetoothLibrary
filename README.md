@@ -4,11 +4,11 @@ SimpleBluetoothLibrary
 
 [![](https://jitpack.io/v/DeveloperPaul123/SimpleBluetoothLibrary.svg)](https://jitpack.io/#DeveloperPaul123/SimpleBluetoothLibrary)
 
-<h2>Description</h2>
+## Description
 
 This library makes it easy for you to implement bluetooth in your Android app. The SimpleBlueooth class handles all the hard work for you and all you have to do is make a few method calls. 
 
-<h2>Dependency</h2>
+## Dependency
 ````java
 repositories {
     ....
@@ -18,13 +18,13 @@ dependencies {
     ....
     compile  'com.github.DeveloperPaul123:SimpleBluetoothLibrary:1.5.1'
 }
-  ````
+````
 
-<h2>Requirements</h2>
+## Requirements
 Min SDK Level is 14 or Android IceCreamSandwich
 
-<h2>Usage</h2>
-This library provides a ````BaseBluetoothActivity```` that you inherit from to easily take care of:
+## Usage
+This library provides a `BaseBluetoothActivity` that you inherit from to easily take care of:
 - Enabling bluetooth
 - Scanning for new devices.
 - Connecting to a device.
@@ -32,6 +32,7 @@ This library provides a ````BaseBluetoothActivity```` that you inherit from to e
 - Sending data to the device.
 
 As an example:
+
 ````java
 public class TestActivity extends BaseBluetoothActivity {
 
@@ -205,14 +206,15 @@ simpleBluetooth.connectToBluetoothServer(curMacAddress);
 ````
 Finally, the library can handle A2DP protocols, although this has not yet been tested. 
 
-<h2>Developed By</h2>
+## Developed By
+
 **Paul T**
 
 Credit to **afollestad** for his material-dialog [library](https://github.com/afollestad/material-dialogs)
 
 <h2>License</h2>
 
-Copyright 2014 - 2016 Paul T
+Copyright 2014 - 2017 Paul T
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 
